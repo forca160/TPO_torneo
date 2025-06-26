@@ -15,4 +15,16 @@ public class Notificacion {
         this.tipo = tipo;
         this.fechaCreacion = LocalDateTime.now();
     }
+
+    public String getEmail() {
+        return this.destinatario.getEmail();
+    }
+
+    public String getUsuario() {
+        return this.destinatario.getUsuario();
+    }
+
+    public String getMensaje() {
+        return this.mensaje;
+    }
 }

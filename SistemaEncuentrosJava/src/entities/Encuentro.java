@@ -41,6 +41,10 @@ public class Encuentro implements observer.Subject {
         }
     }
 
+    public String getId() {
+        return this.id;
+    }
+
     public void cambiarEstado(EstadoPartido nuevoEstado) {
         this.estado = nuevoEstado;
         estado.manejarCambioEstado();

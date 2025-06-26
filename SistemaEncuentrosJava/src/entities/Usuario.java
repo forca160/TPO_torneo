@@ -16,7 +16,7 @@ public class Usuario implements Observer {
     private Notificador notificador;
 
     public Usuario(String usuario, String email, String contraseña, Deporte deporteFavorito,
-                   NivelJuego nivel, String ubicacion) {
+            NivelJuego nivel, String ubicacion) {
         this.usuario = usuario;
         this.email = email;
         this.contraseña = contraseña;
@@ -24,6 +24,18 @@ public class Usuario implements Observer {
         this.nivel = nivel;
         this.ubicacion = ubicacion;
         this.notificador = new Notificador();
+    }
+
+    public String getUsuario() {
+        return this.usuario;
+    }
+
+    public String getEmail() {
+        return this.email;
+    }
+
+    public String getContraseña() {
+        return this.contraseña;
     }
 
     public void registrarse() {
