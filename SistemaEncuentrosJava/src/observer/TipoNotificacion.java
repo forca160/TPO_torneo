@@ -1,0 +1,9 @@
+package observer;
+
+public enum TipoNotificacion {
+    NUEVO_PARTIDO_DEPORTE_FAVORITO,
+    PARTIDO_ARMADO,
+    PARTIDO_EN_JUEGO,
+    PARTIDO_FINALIZADO,
+    PARTIDO_CANCELADO
+}
