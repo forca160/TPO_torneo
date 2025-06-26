@@ -2,8 +2,6 @@ package state;
 
 import entities.Encuentro;
 
-package state;
-
 import entities.Encuentro;
 
 public class EnJuego implements EstadoPartido {
@@ -26,5 +24,11 @@ public class EnJuego implements EstadoPartido {
     @Override
     public boolean puedeConfirmar() {
         return false;
+    }
+
+    private static String mensage = "¡Hola %s! El encuentro de %s del %s esta en Juego";
+
+    public String getMensage() {
+        return mensage;
     }
 }

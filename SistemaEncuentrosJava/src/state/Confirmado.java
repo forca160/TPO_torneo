@@ -1,6 +1,9 @@
 package state;
 
+import java.time.LocalDateTime;
+
 import entities.Encuentro;
+import observer.TipoNotificacion;
 
 public class Confirmado implements EstadoPartido {
     private Encuentro encuentro;
@@ -26,5 +29,11 @@ public class Confirmado implements EstadoPartido {
     @Override
     public boolean puedeConfirmar() {
         return false;
+    }
+
+    private static String mensage = "¡Hola %s! El encuentro de %s del %s ya fue confirmado por todos los.";
+
+    public String getMensage() {
+        return mensage;
     }
 }

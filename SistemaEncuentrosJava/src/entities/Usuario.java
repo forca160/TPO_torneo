@@ -1,6 +1,8 @@
 package entities;
 
+import adapter.AdapterJavaMail;
 import adapter.Notificador;
+import adapter.ServicioNotificacion;
 import observer.Notificacion;
 import observer.Observer;
 import observer.TipoNotificacion;
@@ -54,9 +56,13 @@ public class Usuario implements Observer {
 
     @Override
     public void actualizar(TipoNotificacion tipo, Encuentro encuentro) {
-
-        Notificacion notificacion = new Notificacion(this, "", encuentro);
-        this.notificador.enviar(null);
+        String mensage = encuentro.getMensajeEstado();
+        String.format(mensage,
+                this.getUsuario(),
+                encuentro.getDeporte().getDescripcion(),
+                encuentro.getHorario());
+        Notificacion notificacion = new Notificacion(this, mensage, encuentro);
+        this.notificador.enviar(notificacion);
     }
 
     public void configurarNotificador(Notificador notificador) {
