@@ -2,20 +2,18 @@ package state;
 
 import entities.Encuentro;
 
+import entities.Encuentro;
+
 public class EnJuego implements EstadoPartido {
     private Encuentro encuentro;
-    private static String mensage = "¡Hola %s! El encuentro de %s del %s esta en Juego";
 
-    public EnJuego(Encuentro e) {
-        this.encuentro = e;
-    }
-
-    public String getMensage() {
-        return mensage;
+    public EnJuego(Encuentro encuentro) {
+        this.encuentro = encuentro;
     }
 
     @Override
     public void manejarCambioEstado() {
+        System.out.println("Estado actual: En Juego");
     }
 
     @Override
@@ -26,5 +24,11 @@ public class EnJuego implements EstadoPartido {
     @Override
     public boolean puedeConfirmar() {
         return false;
+    }
+
+    private static String mensage = "¡Hola %s! El encuentro de %s del %s esta en Juego";
+
+    public String getMensage() {
+        return mensage;
     }
 }
