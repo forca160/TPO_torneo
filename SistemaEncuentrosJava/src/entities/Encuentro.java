@@ -58,6 +58,14 @@ public class Encuentro implements observer.Subject {
         estado.manejarCambioEstado();
     }
 
+    public EstadoPartido getEstado() {
+        return estado;
+    }
+
+    public String getMensajeEstado() {
+        return this.estado.getMensage();
+    }
+
     public boolean verificarCapacidad() {
         return participantes.size() <= cantidadJugadoresNecesarios;
     }
