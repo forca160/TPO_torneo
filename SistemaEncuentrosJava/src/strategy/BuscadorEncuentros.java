@@ -13,7 +13,7 @@ public class BuscadorEncuentros {
 
     public List<Encuentro> buscar(Usuario usuario) {
         if (estrategia == null) {
-            throw new IllegalStateException("Estrategia de búsqueda no seteada");
+            throw new IllegalStateException("Estrategia no definida");
         }
         return estrategia.buscarEncuentros(usuario);
     }

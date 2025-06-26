@@ -12,7 +12,7 @@ public class Encuentro implements observer.Subject {
     private Deporte deporte;
     private int cantidadJugadoresNecesarios;
     private int duracionMinutos;
-    private String ubicacion;
+    private Posicion ubicacion;
     private LocalDateTime horario;
     private Usuario organizador;
     private List<Usuario> participantes = new ArrayList<>();
@@ -23,9 +23,40 @@ public class Encuentro implements observer.Subject {
     private boolean permitirCualquierNivel;
     private EstadisticasPartido estadisticas;
     private List<Observer> observadores = new ArrayList<>();
+    private static List<Encuentro> encuentros = new ArrayList<>();
 
-    public void crearEncuentro() {
-        // Logic to create encounter
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setHorario(LocalDateTime horario) {
+        this.horario = horario;
+    }
+
+    public Posicion getUbicacion() {
+        return ubicacion;
+    }
+
+    public List<Usuario> getParticipantes() {
+        return participantes;
+    }
+
+    public static List<Encuentro> getEncuentros() {
+        return encuentros;
+    }
+
+    public NivelJuego getNivelMinimo() {
+        return nivelMinimo;
+    }
+
+    public NivelJuego getNivelMaximo() {
+        return nivelMaximo;
+    }   
+
+
+    
+    public static void agregarEncuentro(Encuentro e) {
+         encuentros.add(e);
     }
 
     public void unirseAlPartido(Usuario usuario) {

@@ -9,7 +9,7 @@ import entities.NivelJuego;
 
 import java.time.LocalDateTime;
 
-public class MainTestEncuentro {
+public class mainFacu {
 
     public static void main(String[] args) {
         // 1. Crear un usuario

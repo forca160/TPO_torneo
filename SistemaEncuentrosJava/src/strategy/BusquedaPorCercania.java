@@ -1,25 +1,44 @@
 package strategy;
 
 import entities.Encuentro;
+import entities.Posicion;
 import entities.Usuario;
 import java.util.List;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 public class BusquedaPorCercania implements EstrategiaBusqueda {
 
-    private double radioKm = 10.0;
+    private double radioKm;
+
+    public BusquedaPorCercania(double radioKm) {
+        this.radioKm = radioKm;
+    }
 
     @Override
     public List<Encuentro> buscarEncuentros(Usuario usuario) {
-        String ubicacionUsuario = usuario.getUbicacion();
+        Posicion ubicacionUsuario = usuario.getUbicacion();
 
-        return EncuentroRepositorio.getEncuentros().stream()
+        return Encuentro.getEncuentros().stream()
                 .filter(e -> calcularDistancia(ubicacionUsuario, e.getUbicacion()) <= radioKm)
                 .collect(Collectors.toList());
     }
 
-    public double calcularDistancia(String ubi1, String ubi2) {
-        // Lógica ficticia de distancia (ejemplo)
-        return 5.0; // en kilómetros
+    public double calcularDistancia(Posicion p1, Posicion p2) {
+        // Fórmula de Haversine simplificada para fines educativos
+        double R = 6371; // km
+        double lat1 = Math.toRadians(p1.getLat());
+        double lon1 = Math.toRadians(p1.getLon());
+        double lat2 = Math.toRadians(p2.getLat());
+        double lon2 = Math.toRadians(p2.getLon());
+
+        double dLat = lat2 - lat1;
+        double dLon = lon2 - lon1;
+
+        double a = Math.pow(Math.sin(dLat / 2), 2)
+                 + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dLon / 2), 2);
+
+        double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+        return R * c;
     }
 }
