@@ -51,9 +51,9 @@ public class Usuario implements Observer {
         return new ArrayList<>();
     }
 
-    @Override
+   @Override
     public void actualizar(TipoNotificacion tipo, Encuentro encuentro) {
-        // Receive notification
+        System.out.println("Notificación para " + usuario + ": " + tipo + " en partido " + encuentro.getId());
     }
 
     public void configurarNotificador(Notificador notificador) {

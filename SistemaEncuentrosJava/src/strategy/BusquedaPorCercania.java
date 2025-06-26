@@ -6,15 +6,20 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class BusquedaPorCercania implements EstrategiaBusqueda {
-    private double radioKm;
-    public BusquedaPorCercania(double radioKm) { this.radioKm = radioKm; }
+
+    private double radioKm = 10.0;
 
     @Override
     public List<Encuentro> buscarEncuentros(Usuario usuario) {
-        return new ArrayList<>();
+        String ubicacionUsuario = usuario.getUbicacion();
+
+        return EncuentroRepositorio.getEncuentros().stream()
+                .filter(e -> calcularDistancia(ubicacionUsuario, e.getUbicacion()) <= radioKm)
+                .collect(Collectors.toList());
     }
 
-    public double calcularDistancia(String origen, String destino) {
-        return 0.0;
+    public double calcularDistancia(String ubi1, String ubi2) {
+        // Lógica ficticia de distancia (ejemplo)
+        return 5.0; // en kilómetros
     }
 }
