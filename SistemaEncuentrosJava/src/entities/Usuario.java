@@ -1,6 +1,7 @@
 package entities;
 
 import adapter.Notificador;
+import observer.Notificacion;
 import observer.Observer;
 import observer.TipoNotificacion;
 import java.util.List;
@@ -51,9 +52,11 @@ public class Usuario implements Observer {
         return new ArrayList<>();
     }
 
-   @Override
+    @Override
     public void actualizar(TipoNotificacion tipo, Encuentro encuentro) {
-        System.out.println("Notificación para " + usuario + ": " + tipo + " en partido " + encuentro.getId());
+
+        Notificacion notificacion = new Notificacion(this, "", encuentro);
+        this.notificador.enviar(null);
     }
 
     public void configurarNotificador(Notificador notificador) {

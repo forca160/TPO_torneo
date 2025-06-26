@@ -1,9 +1,9 @@
 package entities;
 
-public enum Deporte {
-    FUTBOL,
-    BASQUET,
-    TENIS,
-    VOLLEY,
-    PADEL
+public class Deporte {
+    String descripcion;
+
+    public String getDescripcion() {
+        return descripcion;
+    }
 }

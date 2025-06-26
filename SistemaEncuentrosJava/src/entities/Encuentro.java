@@ -45,6 +45,14 @@ public class Encuentro implements observer.Subject {
         return this.id;
     }
 
+    public Deporte getDeporte() {
+        return deporte;
+    }
+
+    public LocalDateTime getHorario() {
+        return horario;
+    }
+
     public void cambiarEstado(EstadoPartido nuevoEstado) {
         this.estado = nuevoEstado;
         estado.manejarCambioEstado();
