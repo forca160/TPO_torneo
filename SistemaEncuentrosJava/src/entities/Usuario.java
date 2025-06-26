@@ -3,6 +3,7 @@ package entities;
 import adapter.AdapterJavaMail;
 import adapter.Notificador;
 import adapter.ServicioNotificacion;
+import adapter.Notificador;
 import observer.Notificacion;
 import observer.Observer;
 import observer.TipoNotificacion;
@@ -15,11 +16,11 @@ public class Usuario implements Observer {
     private String contraseña;
     private Deporte deporteFavorito;
     private NivelJuego nivel;
-    private String ubicacion;
+    private Posicion ubicacion;
     private Notificador notificador;
 
     public Usuario(String usuario, String email, String contraseña, Deporte deporteFavorito,
-            NivelJuego nivel, String ubicacion) {
+            NivelJuego nivel, Posicion ubicacion) {
         this.usuario = usuario;
         this.email = email;
         this.contraseña = contraseña;
@@ -27,6 +28,14 @@ public class Usuario implements Observer {
         this.nivel = nivel;
         this.ubicacion = ubicacion;
         this.notificador = new Notificador();
+    }
+
+    public Posicion getUbicacion() {
+        return ubicacion;
+    }
+
+    public NivelJuego getNivel() {
+        return this.nivel;
     }
 
     public String getUsuario() {
@@ -54,7 +63,7 @@ public class Usuario implements Observer {
         return new ArrayList<>();
     }
 
-    @Override
+   @Override
     public void actualizar(TipoNotificacion tipo, Encuentro encuentro) {
         String mensage = encuentro.getMensajeEstado();
         String.format(mensage,
