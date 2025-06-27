@@ -16,19 +16,21 @@ import java.util.ArrayList;
 public class GestorEncuentros {
     private static List<Encuentro> encuentros = new ArrayList<>();
 
-     public static List<Encuentro> getEncuentros() {
+    public static List<Encuentro> getEncuentros() {
         return encuentros;
     }
 
-    public void crear(String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
+    public Encuentro crear(String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
             Posicion ubicacion, LocalDateTime horario, Usuario organizador,
             NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) {
 
-        Encuentro e = new Encuentro(UUID.randomUUID().toString(),titulo, deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario,
+        Encuentro e = new Encuentro(UUID.randomUUID().toString(), titulo, deporte, cantidadJugadoresNecesarios,
+                duracionMinutos, ubicacion, horario,
                 organizador, nivelMinimo, nivelMaximo, permitirCualquierNivel);
         encuentros.add(e);
         NecesitamosJugadores nj = new NecesitamosJugadores(e);
         e.cambiarEstado(nj);
+        return e;
     }
 
     public Encuentro buscarPorId(String id) {

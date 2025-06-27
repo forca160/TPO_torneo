@@ -41,7 +41,35 @@ public class Main {
                     String u = view.input("Usuario: ");
                     String e = view.input("Email: ");
                     String p = view.input("Pass: ");
-                    sesiones.put(e, facade.registrarUsuario(u, e, p));
+                    String depIn = view.input("Deporte Favorito (FUTBOL / BASQUET / TENIS / VOLLEY / PADEL / NO): ")
+                            .toUpperCase();
+                    Deporte dep = null;
+
+                    for (Deporte d : listaDeporte) {
+                        if (d.getDescripcion().equalsIgnoreCase(depIn)) { // ignora mayúsc./minúsc.
+                            dep = d;
+                            break;
+                        }
+                    }
+                    if (dep == null) {
+                        if (depIn != "NO") {
+                            System.out.println("No se encontró ese deporte.");
+                        }
+                    }
+                    String nivE = view.input("¿Que nivel de jugeo tiene? (PRINCIPIANTE / INTERMEDIO / AVANZADO / NO): ")
+                            .toUpperCase();
+                    NivelJuego nivelSeleccionado = null;
+                    try {
+                        nivelSeleccionado = NivelJuego.valueOf(nivE);
+                    } catch (IllegalArgumentException ex) {
+                        if (nivE != "NO") {
+                            System.out.println(
+                                    "Valor \"" + nivE + "\" no reconocido. "
+                                            + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
+                        }
+                    }
+                    Posicion pos = new Posicion(0, 0);
+                    sesiones.put(e, facade.registrarUsuario(u, e, p, dep, nivelSeleccionado, pos));
                     view.mostrar("Registrado!");
                 }
                 case 2 -> {
@@ -50,6 +78,7 @@ public class Main {
                         view.mostrar("No logueado");
                         break;
                     }
+                    String titulo = view.input("Nombre del encuentro: ").toUpperCase();
                     String depIn = view.input("Deporte (FUTBOL/BASQUET/TENIS/VOLLEY/PADEL): ").toUpperCase();
                     Deporte dep = null;
 
@@ -65,9 +94,46 @@ public class Main {
                     int cant = Integer.parseInt(view.input("Jugadores necesarios: "));
                     int dur = Integer.parseInt(view.input("Duración (min): "));
                     String ubi = view.input("Ubicación: ");
+                    Posicion pos = new Posicion(0, 0);
+                    NivelJuego nivelSeleccionadoMin = null;
+                    while (nivelSeleccionadoMin != null) {
+                        String nivE = view.input(
+                                "¿Que nivel de jugeo minimo tiene el encuentro? (PRINCIPIANTE / INTERMEDIO / AVANZADO): ")
+                                .toUpperCase();
+                        try {
+                            nivelSeleccionadoMin = NivelJuego.valueOf(nivE);
+                        } catch (IllegalArgumentException ex) {
+                            if (nivE != "NO") {
+                                System.out.println(
+                                        "Valor \"" + nivE + "\" no reconocido. "
+                                                + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
+                            }
+                        }
+                    }
+                    NivelJuego nivelSeleccionadoMax = null;
+                    while (nivelSeleccionadoMax != null) {
+                        String nivE = view.input(
+                                "¿Que nivel de jugeo maximo tiene el encuentro? (PRINCIPIANTE / INTERMEDIO / AVANZADO): ")
+                                .toUpperCase();
+                        try {
+                            nivelSeleccionadoMax = NivelJuego.valueOf(nivE);
+                        } catch (IllegalArgumentException ex) {
+                            if (nivE != "NO") {
+                                System.out.println(
+                                        "Valor \"" + nivE + "\" no reconocido. "
+                                                + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
+                            }
+                        }
+                    }
                     int minAd = Integer.parseInt(view.input("Empieza en cuántos minutos? "));
                     LocalDateTime hor = LocalDateTime.now().plusMinutes(minAd);
-                    Encuentro enc = facade.crearEncuentro(u, dep, cant, dur, ubi, hor);
+                    String acep = view.input("¿Acepta cualquier nivel de juego? (SI / NO): ").toUpperCase();
+                    boolean aceptaCualquer = false;
+                    if (acep == "SI") {
+                        aceptaCualquer = true;
+                    }
+                    Encuentro enc = facade.crearEncuentro(titulo, dep, cant, dur, pos, hor, u, nivelSeleccionadoMin,
+                            nivelSeleccionadoMax, aceptaCualquer);
                     view.mostrar("Encuentro creado. ID = " + enc.getId().substring(0, 4));
                 }
                 case 3 -> {

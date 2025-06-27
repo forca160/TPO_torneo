@@ -33,12 +33,12 @@ public class SistemaEncuentrosFacade {
         return u;
     }
 
-    public void crearEncuentro(String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
+    public Encuentro crearEncuentro(String titulo, Deporte deporte, int cantidadJugadoresNecesarios,
+            int duracionMinutos,
             Posicion ubicacion, LocalDateTime horario, Usuario organizador,
             NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) {
-        gestorEncuentros.crear(titulo, deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario,
+        return gestorEncuentros.crear(titulo, deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario,
                 organizador, nivelMinimo, nivelMaximo, permitirCualquierNivel);
-        ;
     }
 
     public List<Encuentro> buscarEncuentros(Usuario u, TipoBusqueda tipo) {
