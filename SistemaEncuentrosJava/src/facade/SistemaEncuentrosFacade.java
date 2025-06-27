@@ -80,6 +80,14 @@ public class SistemaEncuentrosFacade {
         }
     }
 
+    public List<Encuentro> buscaEncuentrosPorOrganizador(Usuario u) {
+        List<Encuentro> e = gestorEncuentros.buscarPorOrganizador(u);
+        if (e.size() <= 0) {
+            return e;
+        }
+        return null;
+    }
+
     public void finalizarEncuentro(String encuentroId, EstadisticasPartido stats) {
         Encuentro e = gestorEncuentros.buscarPorId(encuentroId);
         if (e != null) {

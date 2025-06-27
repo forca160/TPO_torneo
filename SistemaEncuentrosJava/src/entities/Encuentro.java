@@ -63,6 +63,10 @@ public class Encuentro implements observer.Subject {
         return this.titulo;
     }
 
+    public Usuario getOrganizador() {
+        return organizador;
+    }
+
     public void setId(String id) {
         this.id = id;
     }

@@ -17,6 +17,8 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.ArrayList;
 
 public class GestorEncuentros {
@@ -131,6 +133,10 @@ public class GestorEncuentros {
                 scheduler.shutdown();
             }
         }, delay, TimeUnit.MILLISECONDS);
+    }
+
+    public List<Encuentro> buscarPorOrganizador(Usuario u) {
+        return encuentros.stream().filter(e -> u.equals(e.getOrganizador())).collect(Collectors.toList());
     }
 
 }
