@@ -5,7 +5,6 @@ import entities.Encuentro;
 import entities.NivelJuego;
 import entities.Posicion;
 import entities.Usuario;
-import observer.TipoNotificacion;
 import state.EnJuego;
 import state.EstadoPartido;
 import state.NecesitamosJugadores;
