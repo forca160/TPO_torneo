@@ -1,6 +1,10 @@
 package services;
 
+import entities.Encuentro;
 import entities.Usuario;
+import state.Cancelado;
+import state.EstadoPartido;
+
 import observer.Observer;
 import observer.Subject;
 
@@ -35,6 +39,11 @@ public class GestorUsuarios implements Subject {
         return usuario.obtenerHistorialPartidos();
     }
 
+    public void cancelarEncuentro(Encuentro e) {
+        EstadoPartido cancel = new Cancelado(e);
+        e.cambiarEstado(cancel);
+    }
+
     public void agregarObserver(Observer obs) {
         observadores.add(obs);
     }
@@ -43,9 +52,9 @@ public class GestorUsuarios implements Subject {
         observadores.remove(obs);
     }
 
-    public void notificar() {
+    public void notificar(Encuentro e) {
         for (Observer obs : observadores) {
-            obs.actualizar(this);
+            obs.actualizar(e);
         }
     }
 }

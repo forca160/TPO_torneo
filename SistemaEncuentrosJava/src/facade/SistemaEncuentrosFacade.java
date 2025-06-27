@@ -11,6 +11,7 @@ import entities.Encuentro;
 import entities.Posicion;
 import services.GestorUsuarios;
 import state.EstadoPartido;
+import state.Finalizado;
 import state.NecesitamosJugadores;
 import state.PartidoArmado;
 import services.GestorEncuentros;
@@ -80,5 +81,5 @@ public class SistemaEncuentrosFacade {
         return gestorEncuentros.buscarPorId(id);
     }
 
-    
+
 }
