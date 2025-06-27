@@ -134,4 +134,22 @@ public class GestorEncuentros {
         }, delay, TimeUnit.MILLISECONDS);
     }
 
+    public void programarCambioEstadoDuracion(Encuentro e){
+          // Calcula el retraso en milisegundos desde ahora hasta la fecha del evento
+        long delay = Duration.between(LocalDateTime.now(), e.getHorario().plusMinutes(e.getDuracion())).toMillis();
+        if (delay < 0) {
+            // Si ya pasó la fecha, actualiza inmediatamente
+            jugarEncuentro(e);
+            return;
+        }
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.schedule(() -> {
+            try {
+                jugarEncuentro(e);
+            } finally {
+                scheduler.shutdown();
+            }
+        }, delay, TimeUnit.MILLISECONDS);
+    }
 }
