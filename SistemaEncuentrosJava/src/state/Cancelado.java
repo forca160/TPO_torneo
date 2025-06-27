@@ -23,6 +23,7 @@ public class Cancelado implements EstadoPartido {
 
     @Override
     public void manejarCambioEstado() {
+        this.encuentro.notificar();
     }
 
     @Override

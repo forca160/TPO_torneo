@@ -20,10 +20,9 @@ public class Finalizado implements EstadoPartido {
     @Override
     public void manejarCambioEstado() {
         for (Usuario u : encuentro.getParticipantes()) {
-        u.agregarEncuentroAlHistorial(encuentro);
-    }
-        encuentro.notificar();
-
+            u.agregarEncuentroAlHistorial(encuentro);
+        }
+        this.encuentro.notificar();
     }
 
     @Override

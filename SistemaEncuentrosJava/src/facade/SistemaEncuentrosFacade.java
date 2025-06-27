@@ -8,6 +8,8 @@ import entities.EstadisticasPartido;
 import entities.NivelJuego;
 import entities.Posicion;
 import services.GestorUsuarios;
+import state.Confirmado;
+import state.EnJuego;
 import services.GestorEncuentros;
 import strategy.BuscadorEncuentros;
 import strategy.BusquedaPorCercania;
@@ -67,9 +69,8 @@ public class SistemaEncuentrosFacade {
     public void unirseEncuentro(Usuario u, String encuentroId) {
         Encuentro e = gestorEncuentros.buscarPorId(encuentroId);
         if (e != null) {
-            e.unirseAlPartido(u);
+            gestorEncuentros.unirseEncuentro(e, u);
         }
-        gestorEncuentros.unirseEncuentro(e, u);
 
     }
 
@@ -82,22 +83,37 @@ public class SistemaEncuentrosFacade {
 
     public List<Encuentro> buscaEncuentrosPorOrganizador(Usuario u) {
         List<Encuentro> e = gestorEncuentros.buscarPorOrganizador(u);
-        if (e.size() <= 0) {
+        if (e.size() > 0) {
             return e;
         }
         return null;
     }
 
-    public void finalizarEncuentro(String encuentroId, EstadisticasPartido stats) {
+    public void finalizarEncuentro(String encuentroId) {
         Encuentro e = gestorEncuentros.buscarPorId(encuentroId);
-        if (e != null) {
-            gestorEncuentros.finalizarEncuentro(e, stats);
+        if (e != null && e.getEstado() instanceof EnJuego) {
+            gestorEncuentros.finalizarEncuentro(e);
         }
 
     }
 
+    public boolean cancelarEncuentro(String id) {
+        Encuentro e = gestorEncuentros.buscarPorId(id);
+
+        gestorUsuarios.cancelarEncuentro(e);
+
+        return true;
+    }
+
     public Encuentro obtenerEncuentro(String id) {
         return gestorEncuentros.buscarPorId(id);
+    }
+
+    public void empezarEncuentro(String id) {
+        Encuentro e = gestorEncuentros.buscarPorId(id);
+        if (e != null && e.getEstado() instanceof Confirmado) {
+            gestorEncuentros.jugarEncuentro(e);
+        }
     }
 
 }

@@ -3,7 +3,6 @@ package state;
 import java.time.LocalDateTime;
 
 import entities.Encuentro;
-import observer.TipoNotificacion;
 
 public class NecesitamosJugadores implements EstadoPartido {
     private Encuentro encuentro;

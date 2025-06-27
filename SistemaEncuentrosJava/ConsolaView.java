@@ -15,6 +15,8 @@ public class ConsolaView {
                 4) Unirse a encuentro
                 5) Cancelar encuentro
                 6) Confirmar asistencia
+                7) Forzar inicio
+                8) Forzar finalizacion
                 0) Salir""");
         return Integer.parseInt(sc.nextLine());
     }
@@ -37,7 +39,7 @@ public class ConsolaView {
                 "ID", "Hora", "Deporte", "JugNec", "Part", "Conf", "Estado", "Ubicación");
         for (Encuentro e : es) {
             System.out.printf(" %s | | %s | | %s | | %s | | %s | | %s | %s%n",
-                    e.getId().substring(0, 4),
+                    e.getId(),
                     e.getHorario().toLocalTime(),
                     e.getDeporte().getDescripcion(),
                     e.getCantidadJugadoresNecesarios(),

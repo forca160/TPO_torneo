@@ -178,9 +178,49 @@ public class Main {
                         view.mostrar("No logueado");
                         break;
                     }
-                    String id = view.input("ID del encuentro (primeros 4 caracteres): ");
+                    String id = view.input("ID del encuentro: ");
                     facade.unirseEncuentro(u, id);
                     view.mostrar(String.format("!Te uniste al encuentro %s", id));
+                }
+                case 5 -> {
+                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    if (u == null) {
+                        view.mostrar("No logueado");
+                        break;
+                    }
+                    view.listarEncuentros(facade.buscaEncuentrosPorOrganizador(u));
+                    String id = view.input("ID del encuentro que desa cancelar: ");
+                    facade.cancelarEncuentro(id);
+                    view.mostrar(String.format("Se cancelo el encuentro %s.", id));
+                }
+                case 6 -> {
+                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    if (u == null) {
+                        view.mostrar("No logueado");
+                        break;
+                    }
+                    String id = view.input("ID del encuentro: ");
+                    facade.confirmarParticipacion(u, id);
+                }
+                case 7 -> {
+                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    if (u == null) {
+                        view.mostrar("No logueado");
+                        break;
+                    }
+                    view.listarEncuentros(facade.buscaEncuentrosPorOrganizador(u));
+                    String id = view.input("ID del encuentro que desa empezar: ");
+                    facade.empezarEncuentro(id);
+                }
+                case 8 -> {
+                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    if (u == null) {
+                        view.mostrar("No logueado");
+                        break;
+                    }
+                    view.listarEncuentros(facade.buscaEncuentrosPorOrganizador(u));
+                    String id = view.input("ID del encuentro que desa finalizar: ");
+                    facade.finalizarEncuentro(id);
                 }
                 case 0 -> {
                     System.out.println("¡Hasta luego!");

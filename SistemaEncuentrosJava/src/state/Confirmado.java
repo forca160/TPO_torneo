@@ -2,9 +2,7 @@
 package state;
 
 import java.time.LocalDateTime;
-import entities.Deporte;
 import entities.Encuentro;
-import observer.TipoNotificacion;
 
 public class Confirmado implements EstadoPartido {
     private Encuentro encuentro;
@@ -19,7 +17,7 @@ public class Confirmado implements EstadoPartido {
         if (LocalDateTime.now().isAfter(encuentro.getHorario())) {
             encuentro.cambiarEstado(new EnJuego(encuentro));
         }
-        encuentro.notificar();
+        this.encuentro.notificar();
     }
 
     @Override

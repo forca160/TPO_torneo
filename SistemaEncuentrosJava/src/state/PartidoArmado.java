@@ -1,7 +1,6 @@
 package state;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 
 import entities.Encuentro;
 
@@ -20,6 +19,7 @@ public class PartidoArmado implements EstadoPartido {
 
     @Override
     public void manejarCambioEstado() {
+        this.encuentro.notificar();
     }
 
     @Override

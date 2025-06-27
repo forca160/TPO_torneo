@@ -6,7 +6,6 @@ import services.GestorEncuentros;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 public class BusquedaPorHistorial implements EstrategiaBusqueda {
 
@@ -20,11 +19,11 @@ public class BusquedaPorHistorial implements EstrategiaBusqueda {
     }
 
     public List<Usuario> obtenerJugadoresPrevios(Usuario usuario) {
-    return usuario.obtenerHistorialPartidos().stream()
-            .flatMap(e -> e.getParticipantes().stream())
-            .filter(u -> !u.equals(usuario)) // excluís a sí mismo
-            .distinct()
-            .collect(Collectors.toList());
-}
+        return usuario.obtenerHistorialPartidos().stream()
+                .flatMap(e -> e.getParticipantes().stream())
+                .filter(u -> !u.equals(usuario)) // excluís a sí mismo
+                .distinct()
+                .collect(Collectors.toList());
+    }
 
 }

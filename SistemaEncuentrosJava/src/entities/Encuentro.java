@@ -103,6 +103,7 @@ public class Encuentro implements observer.Subject {
         if (estado.puedeUnirse()) {
             participantes.add(usuario);
             cantidadConfirmaciones++;
+            agregarObserver(usuario);
         }
     }
 
@@ -113,7 +114,6 @@ public class Encuentro implements observer.Subject {
 
             if (confirmados.size() == participantes.size()) {
                 cambiarEstado(new Confirmado(this));
-                notificar();
             }
         }
     }
@@ -134,9 +134,11 @@ public class Encuentro implements observer.Subject {
     public LocalDateTime getHorario() {
         return horario;
     }
-    public int getDuracion(){
+
+    public int getDuracion() {
         return this.duracionMinutos;
     }
+
     public EstadoPartido getEstado() {
         return estado;
     }

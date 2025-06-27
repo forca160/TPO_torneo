@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import entities.Encuentro;
 
-import entities.Encuentro;
-
 public class EnJuego implements EstadoPartido {
     private Encuentro encuentro;
 
@@ -15,7 +13,7 @@ public class EnJuego implements EstadoPartido {
 
     @Override
     public void manejarCambioEstado() {
-        System.out.println("Estado actual: En Juego");
+        this.encuentro.notificar();
     }
 
     @Override

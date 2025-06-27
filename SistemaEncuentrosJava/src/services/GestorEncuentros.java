@@ -5,6 +5,7 @@ import entities.Encuentro;
 import entities.NivelJuego;
 import entities.Posicion;
 import entities.Usuario;
+import state.Confirmado;
 import state.EnJuego;
 import state.EstadoPartido;
 import state.NecesitamosJugadores;
@@ -17,7 +18,6 @@ import java.util.UUID;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.ArrayList;
 
@@ -70,6 +70,13 @@ public class GestorEncuentros {
                 .findFirst().orElse(null);
     }
 
+    public void confirmarParticipacion(Usuario u, Encuentro e) {
+        e.confirmarParticipacion(u);
+        if (e.getEstado() instanceof Confirmado) {
+            programarCambioEstado(e);
+        }
+    }
+
     public List<Encuentro> obtenerTodos() {
         return encuentros;
     }
@@ -98,14 +105,13 @@ public class GestorEncuentros {
     }
 
     // ✅ Podés agregar esto si querés forzar el cambio de estado desde el facade
-    public void finalizarEncuentro(Encuentro e, entities.EstadisticasPartido stats) {
+    public void finalizarEncuentro(Encuentro e) {
         e.cambiarEstado(new state.Finalizado(e));
-        // podrías guardar stats si hace falta
-        e.notificar();
     }
 
     public void unirseEncuentro(Encuentro e, Usuario u) {
-        if (e.getCantidadJugadoresNecesarios() == e.getCantidadConfirmaciones()) {
+        e.unirseAlPartido(u);
+        if (e.getCantidadJugadoresNecesarios() == e.getParticipantes().size()) {
             EstadoPartido ep = new PartidoArmado(e);
             e.cambiarEstado(ep);
         }
@@ -114,6 +120,7 @@ public class GestorEncuentros {
     public void jugarEncuentro(Encuentro e) {
         EstadoPartido ep = new EnJuego(e);
         e.cambiarEstado(ep);
+        programarCambioEstadoDuracion(e);
     }
 
     public void programarCambioEstado(Encuentro e) {
@@ -121,14 +128,24 @@ public class GestorEncuentros {
         long delay = Duration.between(LocalDateTime.now(), e.getHorario()).toMillis();
         if (delay < 0) {
             // Si ya pasó la fecha, actualiza inmediatamente
-            jugarEncuentro(e);
+            if (e.getEstado() instanceof Confirmado) {
+                jugarEncuentro(e);
+            } else if (e.getEstado() instanceof PartidoArmado || e.getEstado() instanceof NecesitamosJugadores) {
+                GestorUsuarios gestorUsuarios = GestorUsuarios.obtenerInstancia();
+                gestorUsuarios.cancelarEncuentro(e);
+            }
             return;
         }
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.schedule(() -> {
             try {
-                jugarEncuentro(e);
+                if (e.getEstado() instanceof Confirmado) {
+                    jugarEncuentro(e);
+                } else if (e.getEstado() instanceof PartidoArmado || e.getEstado() instanceof NecesitamosJugadores) {
+                    GestorUsuarios gestorUsuarios = GestorUsuarios.obtenerInstancia();
+                    gestorUsuarios.cancelarEncuentro(e);
+                }
             } finally {
                 scheduler.shutdown();
             }
@@ -140,14 +157,18 @@ public class GestorEncuentros {
         long delay = Duration.between(LocalDateTime.now(), e.getHorario().plusMinutes(e.getDuracion())).toMillis();
         if (delay < 0) {
             // Si ya pasó la fecha, actualiza inmediatamente
-            jugarEncuentro(e);
+            if (e.getEstado() instanceof EnJuego) {
+                finalizarEncuentro(e);
+            }
             return;
         }
 
         ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
         scheduler.schedule(() -> {
             try {
-                jugarEncuentro(e);
+                if (e.getEstado() instanceof EnJuego) {
+                    finalizarEncuentro(e);
+                }
             } finally {
                 scheduler.shutdown();
             }
@@ -155,7 +176,8 @@ public class GestorEncuentros {
     }
 
     public List<Encuentro> buscarPorOrganizador(Usuario u) {
-        return encuentros.stream().filter(e -> u.equals(e.getOrganizador())).collect(Collectors.toList());
+        List<Encuentro> es = encuentros.stream().filter(e -> u.equals(e.getOrganizador())).collect(Collectors.toList());
+        return es;
     }
 
 }
