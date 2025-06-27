@@ -1,6 +1,10 @@
 package services;
 
+import entities.Encuentro;
 import entities.Usuario;
+import state.Cancelado;
+import state.EstadoPartido;
+
 import java.util.List;
 import java.util.ArrayList;
 
@@ -25,5 +29,10 @@ public class GestorUsuarios {
 
     public List<entities.Encuentro> obtenerHistorialPartidos(Usuario usuario) {
         return usuario.obtenerHistorialPartidos();
+    }
+
+    public void cancelarEncuentro(Encuentro e){
+        EstadoPartido cancel = new Cancelado(e);
+        e.cambiarEstado(cancel);
     }
 }

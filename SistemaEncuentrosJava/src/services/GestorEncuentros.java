@@ -109,4 +109,5 @@ public class GestorEncuentros {
             }
         }, delay, TimeUnit.MILLISECONDS);
     }
+
 }
