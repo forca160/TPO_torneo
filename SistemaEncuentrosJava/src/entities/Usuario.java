@@ -30,6 +30,10 @@ public class Usuario implements Observer {
         this.notificador = new Notificador();
     }
 
+    public Deporte getDeporteFavorito() {
+        return deporteFavorito;
+    }
+
     public Posicion getUbicacion() {
         return ubicacion;
     }

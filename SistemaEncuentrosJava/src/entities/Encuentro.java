@@ -19,6 +19,7 @@ import java.util.HashSet;
 
 public class Encuentro implements observer.Subject {
     private String id;
+    private String titulo;
     private Deporte deporte;
     private int cantidadJugadoresNecesarios;
     private int duracionMinutos;
@@ -35,11 +36,12 @@ public class Encuentro implements observer.Subject {
     private List<Observer> observadores = new ArrayList<>();
     private Set<Usuario> confirmados = new HashSet<>();
 
-    public Encuentro(String id, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
+    public Encuentro(String id, String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
             Posicion ubicacion, LocalDateTime horario, Usuario organizador,
             NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) {
 
         this.id = id;
+        this.titulo = titulo;
         this.deporte = deporte;
         this.cantidadJugadoresNecesarios = cantidadJugadoresNecesarios;
         this.duracionMinutos = duracionMinutos;
@@ -55,6 +57,10 @@ public class Encuentro implements observer.Subject {
         this.observadores = new ArrayList<>();
         this.cantidadConfirmaciones = 0;
         this.estadisticas = null;
+    }
+
+    public String getTitulo(){
+        return this.titulo;
     }
 
     public void setId(String id) {

@@ -10,16 +10,21 @@ import state.NecesitamosJugadores;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 import java.util.ArrayList;
 
 public class GestorEncuentros {
-    private List<Encuentro> encuentros = new ArrayList<>();
+    private static List<Encuentro> encuentros = new ArrayList<>();
 
-    public void crear(String id, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
+     public static List<Encuentro> getEncuentros() {
+        return encuentros;
+    }
+
+    public void crear(String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
             Posicion ubicacion, LocalDateTime horario, Usuario organizador,
             NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) {
 
-        Encuentro e = new Encuentro(id, deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario,
+        Encuentro e = new Encuentro(UUID.randomUUID().toString(),titulo, deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario,
                 organizador, nivelMinimo, nivelMaximo, permitirCualquierNivel);
         encuentros.add(e);
         NecesitamosJugadores nj = new NecesitamosJugadores(e);

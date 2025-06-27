@@ -27,16 +27,13 @@ public class mainFacu {
 
         //String id, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,Posicion ubicacion, LocalDateTime horario, Usuario organizador,NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel
         // 4. Crear encuentro 1
-        facade.crearEncuentro(UUID.randomUUID().toString(),futbol,2,60,new Posicion(-34.60f, -58.38f),LocalDateTime.now().minusMinutes(1),facu,NivelJuego.AVANZADO,NivelJuego.AVANZADO,false);
-        facade.crearEncuentro(UUID.randomUUID().toString(),futbol,2,60,new Posicion(-34.60f, -58.38f),LocalDateTime.now().minusMinutes(1),lucas,NivelJuego.PRINCIPIANTE,NivelJuego.INTERMEDIO,false); 
+        facade.crearEncuentro("Partido futbol Facu", futbol,2,60,new Posicion(-34.60f, -58.38f),LocalDateTime.now().minusMinutes(1),facu,NivelJuego.AVANZADO,NivelJuego.AVANZADO,false);
+        facade.crearEncuentro("Partido futbol Lucas",futbol,2,60,new Posicion(-34.60f, -58.38f),LocalDateTime.now().minusMinutes(1),lucas,NivelJuego.PRINCIPIANTE,NivelJuego.INTERMEDIO,false); 
 
         System.out.println("Encuentros sugeridos para Facu por nivel:");
-        facade.buscarEncuentros(facu, TipoBusqueda.POR_NIVEL).forEach(e ->
-                System.out.println("- " + e.getId() + " (" + e.getDeporte().getDescripcion() + ")")
+        facade.buscarEncuentros(lucas, TipoBusqueda.POR_NIVEL).forEach(e ->
+                System.out.println("- " + e.getTitulo() + " (" + e.getDeporte().getDescripcion() + ")")
         );
 
-
-       
-        
     }
 }
