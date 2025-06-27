@@ -134,7 +134,9 @@ public class Encuentro implements observer.Subject {
     public LocalDateTime getHorario() {
         return horario;
     }
-
+    public int getDuracion(){
+        return this.duracionMinutos;
+    }
     public EstadoPartido getEstado() {
         return estado;
     }
