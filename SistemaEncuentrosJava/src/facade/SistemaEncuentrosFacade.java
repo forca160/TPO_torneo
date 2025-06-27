@@ -80,5 +80,4 @@ public class SistemaEncuentrosFacade {
         return gestorEncuentros.buscarPorId(id);
     }
 
-    
 }
