@@ -1,7 +1,12 @@
 package entities;
 
 public class Deporte {
-    String descripcion;
+    private String descripcion;
+
+    // Constructor
+    public Deporte(String descripcion) {
+        this.descripcion = descripcion;
+    }
 
     public String getDescripcion() {
         return descripcion;

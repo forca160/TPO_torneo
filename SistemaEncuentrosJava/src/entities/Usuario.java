@@ -64,7 +64,7 @@ public class Usuario implements Observer {
     }
 
    @Override
-    public void actualizar(TipoNotificacion tipo, Encuentro encuentro) {
+    public void actualizar(Encuentro encuentro) {
         String mensage = encuentro.getMensajeEstado();
         String.format(mensage,
                 this.getUsuario(),

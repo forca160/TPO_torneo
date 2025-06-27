@@ -1,6 +1,9 @@
 package state;
 
+import java.time.LocalDateTime;
+
 import entities.Encuentro;
+import entities.Deporte;
 
 public interface EstadoPartido {
     void manejarCambioEstado();
@@ -9,5 +12,6 @@ public interface EstadoPartido {
 
     boolean puedeConfirmar();
 
-    String getMensage();
+    String getMensage(String usuario, String deporte, LocalDateTime dia);
 }
+ 

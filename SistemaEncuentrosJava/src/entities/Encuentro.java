@@ -1,11 +1,14 @@
 package entities;
 
 import state.EstadoPartido;
+import state.Confirmado;
 import observer.Observer;
 import observer.TipoNotificacion;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Encuentro implements observer.Subject {
     private String id;
@@ -23,7 +26,31 @@ public class Encuentro implements observer.Subject {
     private boolean permitirCualquierNivel;
     private EstadisticasPartido estadisticas;
     private List<Observer> observadores = new ArrayList<>();
-    private static List<Encuentro> encuentros = new ArrayList<>();
+    private Set<Usuario> confirmados = new HashSet<>();
+    
+
+    public Encuentro(String id, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
+                 Posicion ubicacion, LocalDateTime horario, Usuario organizador,
+                 NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) {
+
+    this.id = id;
+    this.deporte = deporte;
+    this.cantidadJugadoresNecesarios = cantidadJugadoresNecesarios;
+    this.duracionMinutos = duracionMinutos;
+    this.ubicacion = ubicacion;
+    this.horario = horario;
+    this.organizador = organizador;
+    this.nivelMinimo = nivelMinimo;
+    this.nivelMaximo = nivelMaximo;
+    this.permitirCualquierNivel = permitirCualquierNivel;
+
+    this.estado = null; // lo setearás con setEstado/cambiarEstado después
+    this.participantes = new ArrayList<>();
+    this.observadores = new ArrayList<>();
+    this.cantidadConfirmaciones = 0;
+    this.estadisticas = null;
+}
+
 
     public void setId(String id) {
         this.id = id;
@@ -41,10 +68,6 @@ public class Encuentro implements observer.Subject {
         return participantes;
     }
 
-    public static List<Encuentro> getEncuentros() {
-        return encuentros;
-    }
-
     public NivelJuego getNivelMinimo() {
         return nivelMinimo;
     }
@@ -53,12 +76,6 @@ public class Encuentro implements observer.Subject {
         return nivelMaximo;
     }   
 
-
-    
-    public static void agregarEncuentro(Encuentro e) {
-         encuentros.add(e);
-    }
-
     public void unirseAlPartido(Usuario usuario) {
         if (estado.puedeUnirse()) {
             participantes.add(usuario);
@@ -66,10 +83,23 @@ public class Encuentro implements observer.Subject {
         }
     }
 
-    public void confirmarParticipacion() {
-        if (estado.puedeConfirmar()) {
-            cantidadConfirmaciones++;
+   
+public void confirmarParticipacion(Usuario usuario) {
+    if (estado.puedeConfirmar() && participantes.contains(usuario) && !confirmados.contains(usuario)) {
+        confirmados.add(usuario);
+        System.out.println(usuario.getUsuario() + " confirmó su participación");
+
+        if (confirmados.size() == participantes.size()) {
+            Confirmado c = new Confirmado(this);
+            cambiarEstado(new Confirmado(this));
+            notificar();
         }
+    }
+}
+
+    public void cambiarEstado(EstadoPartido nuevoEstado) {
+        this.estado = nuevoEstado;
+        estado.manejarCambioEstado();
     }
 
     public String getId() {
@@ -84,17 +114,14 @@ public class Encuentro implements observer.Subject {
         return horario;
     }
 
-    public void cambiarEstado(EstadoPartido nuevoEstado) {
-        this.estado = nuevoEstado;
-        estado.manejarCambioEstado();
-    }
+    
 
     public EstadoPartido getEstado() {
         return estado;
     }
 
-    public String getMensajeEstado() {
-        return this.estado.getMensage();
+   public String getMensajeEstado(String usuario) {
+        return this.estado.getMensage(usuario, this.getDeporte().getDescripcion(), this.getHorario());
     }
 
     public boolean verificarCapacidad() {
@@ -112,9 +139,9 @@ public class Encuentro implements observer.Subject {
     }
 
     @Override
-    public void notificar(TipoNotificacion tipo) {
+    public void notificar() {
         for (Observer obs : observadores) {
-            obs.actualizar(tipo, this);
+            obs.actualizar(this);
         }
     }
 }
