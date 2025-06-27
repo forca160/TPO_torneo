@@ -3,6 +3,7 @@ package state;
 import java.time.LocalDateTime;
 
 import entities.Encuentro;
+import observer.TipoNotificacion;
 
 public class NecesitamosJugadores implements EstadoPartido {
     private Encuentro encuentro;
@@ -18,6 +19,7 @@ public class NecesitamosJugadores implements EstadoPartido {
 
     @Override
     public void manejarCambioEstado() {
+        this.encuentro.notificar();
     }
 
     @Override

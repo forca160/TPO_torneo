@@ -6,6 +6,8 @@ import entities.NivelJuego;
 import entities.Posicion;
 import entities.Usuario;
 import observer.TipoNotificacion;
+import state.NecesitamosJugadores;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
@@ -20,7 +22,8 @@ public class GestorEncuentros {
         Encuentro e = new Encuentro(id, deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario,
                 organizador, nivelMinimo, nivelMaximo, permitirCualquierNivel);
         encuentros.add(e);
-        notificarNuevoPartido(e); // notifica apenas se crea, si querés
+        NecesitamosJugadores nj = new NecesitamosJugadores(e);
+        e.cambiarEstado(nj);
     }
 
     public Encuentro buscarPorId(String id) {
