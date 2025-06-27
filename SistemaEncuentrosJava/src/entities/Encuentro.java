@@ -108,7 +108,6 @@ public class Encuentro implements observer.Subject {
             System.out.println(usuario.getUsuario() + " confirmó su participación");
 
             if (confirmados.size() == participantes.size()) {
-                Confirmado c = new Confirmado(this);
                 cambiarEstado(new Confirmado(this));
                 notificar();
             }

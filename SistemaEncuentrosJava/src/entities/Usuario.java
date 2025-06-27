@@ -18,6 +18,7 @@ public class Usuario implements Observer {
     private NivelJuego nivel;
     private Posicion ubicacion;
     private Notificador notificador;
+    private List<Encuentro> historial = new ArrayList<>();
 
     public Usuario(String usuario, String email, String contraseña, Deporte deporteFavorito,
             NivelJuego nivel, Posicion ubicacion) {
@@ -88,11 +89,6 @@ public class Usuario implements Observer {
         this.notificador = notificador;
     }
 
-    public List<Encuentro> obtenerHistorialPartidos() {
-        // Retrieve match history
-        return new ArrayList<>();
-    }
-
     @Override
     public void actualizar(Encuentro encuentro) {
         String mensage = encuentro.getMensajeEstado(this.getUsuario());
@@ -102,6 +98,14 @@ public class Usuario implements Observer {
 
     public void configurarNotificador(ServicioNotificacion serv) {
         this.notificador.setServicio(serv);
+    }
+
+    public void agregarEncuentroAlHistorial(Encuentro e) {
+        historial.add(e);
+    }
+
+    public List<Encuentro> obtenerHistorialPartidos() {
+        return historial;
     }
 
 }
