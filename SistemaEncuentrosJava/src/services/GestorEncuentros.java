@@ -6,7 +6,9 @@ import entities.NivelJuego;
 import entities.Posicion;
 import entities.Usuario;
 import observer.TipoNotificacion;
+import state.EstadoPartido;
 import state.NecesitamosJugadores;
+import state.PartidoArmado;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -71,5 +73,12 @@ public class GestorEncuentros {
         e.cambiarEstado(new state.Finalizado(e));
         // podrías guardar stats si hace falta
         e.notificar();
+    }
+
+    public void unirseEncuentro(Encuentro e, Usuario u){
+        if (e.getCantidadJugadoresNecesarios() == e.getCantidadConfirmaciones()){
+            EstadoPartido ep = new PartidoArmado(e);
+            e.cambiarEstado(ep);
+        }
     }
 }

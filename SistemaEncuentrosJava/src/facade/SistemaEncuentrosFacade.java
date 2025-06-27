@@ -10,7 +10,9 @@ import entities.NivelJuego;
 import entities.Encuentro;
 import entities.Posicion;
 import services.GestorUsuarios;
+import state.EstadoPartido;
 import state.NecesitamosJugadores;
+import state.PartidoArmado;
 import services.GestorEncuentros;
 import strategy.BuscadorEncuentros;
 import facade.TipoBusqueda;
@@ -55,6 +57,8 @@ public class SistemaEncuentrosFacade {
         if (e != null) {
             e.unirseAlPartido(u);
         }
+        gestorEncuentros.unirseEncuentro(e, u);
+
     }
 
     public void confirmarParticipacion(Usuario u, String encuentroId) {
@@ -69,6 +73,7 @@ public class SistemaEncuentrosFacade {
         if (e != null) {
             gestorEncuentros.finalizarEncuentro(e, stats);
         }
+
     }
 
     public Encuentro obtenerEncuentro(String id) {
