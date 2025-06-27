@@ -1,6 +1,7 @@
 package entities;
 
 import state.EstadoPartido;
+import state.Confirmado;
 import observer.Observer;
 import observer.TipoNotificacion;
 import state.Cancelado;
@@ -12,7 +13,9 @@ import state.PartidoArmado;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class Encuentro implements observer.Subject {
     private String id;
@@ -30,7 +33,7 @@ public class Encuentro implements observer.Subject {
     private boolean permitirCualquierNivel;
     private EstadisticasPartido estadisticas;
     private List<Observer> observadores = new ArrayList<>();
-    private static List<Encuentro> encuentros = new ArrayList<>();
+    private Set<Usuario> confirmados = new HashSet<>();
 
     public Encuentro(String id, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
             Posicion ubicacion, LocalDateTime horario, Usuario organizador,
@@ -70,20 +73,12 @@ public class Encuentro implements observer.Subject {
         return participantes;
     }
 
-    public static List<Encuentro> getEncuentros() {
-        return encuentros;
-    }
-
     public NivelJuego getNivelMinimo() {
         return nivelMinimo;
     }
 
     public NivelJuego getNivelMaximo() {
         return nivelMaximo;
-    }
-
-    public static void agregarEncuentro(Encuentro e) {
-        encuentros.add(e);
     }
 
     public int getCantidadConfirmaciones() {
@@ -101,10 +96,22 @@ public class Encuentro implements observer.Subject {
         }
     }
 
-    public void confirmarParticipacion() {
-        if (estado.puedeConfirmar()) {
-            cantidadConfirmaciones++;
+    public void confirmarParticipacion(Usuario usuario) {
+        if (estado.puedeConfirmar() && participantes.contains(usuario) && !confirmados.contains(usuario)) {
+            confirmados.add(usuario);
+            System.out.println(usuario.getUsuario() + " confirmó su participación");
+
+            if (confirmados.size() == participantes.size()) {
+                Confirmado c = new Confirmado(this);
+                cambiarEstado(new Confirmado(this));
+                notificar();
+            }
         }
+    }
+
+    public void cambiarEstado(EstadoPartido nuevoEstado) {
+        this.estado = nuevoEstado;
+        estado.manejarCambioEstado();
     }
 
     public String getId() {
@@ -119,17 +126,8 @@ public class Encuentro implements observer.Subject {
         return horario;
     }
 
-    public void cambiarEstado(EstadoPartido nuevoEstado) {
-        this.estado = nuevoEstado;
-        estado.manejarCambioEstado();
-    }
-
     public EstadoPartido getEstado() {
         return estado;
-    }
-
-    public void setDeporte(Deporte deporte) {
-        this.deporte = deporte;
     }
 
     public String getMensajeEstado(String usuario) {

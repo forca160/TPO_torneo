@@ -1,7 +1,7 @@
+
 package state;
 
 import java.time.LocalDateTime;
-
 import entities.Deporte;
 import entities.Encuentro;
 import observer.TipoNotificacion;
