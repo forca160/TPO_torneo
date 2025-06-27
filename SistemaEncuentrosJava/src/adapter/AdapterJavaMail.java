@@ -12,6 +12,6 @@ public class AdapterJavaMail implements ServicioNotificacion {
     @Override
     public void enviarNotificacion(Notificacion notificacion) {
         javaMailService.sendEmail(
-                notificacion.getEmail(), "Notificación", notificacion.getMensaje());
+                notificacion.getEmail(), "eventos-noresponse@gmail.com", notificacion.getMensaje());
     }
 }

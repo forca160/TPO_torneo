@@ -63,18 +63,15 @@ public class Usuario implements Observer {
         return new ArrayList<>();
     }
 
-   @Override
-    public void actualizar(TipoNotificacion tipo, Encuentro encuentro) {
-        String mensage = encuentro.getMensajeEstado();
-        String.format(mensage,
-                this.getUsuario(),
-                encuentro.getDeporte().getDescripcion(),
-                encuentro.getHorario());
+    @Override
+    public void actualizar(Encuentro encuentro) {
+        String mensage = encuentro.getMensajeEstado(this.getUsuario());
         Notificacion notificacion = new Notificacion(this, mensage, encuentro);
         this.notificador.enviar(notificacion);
     }
 
-    public void configurarNotificador(Notificador notificador) {
-        this.notificador = notificador;
+    public void configurarNotificador(ServicioNotificacion serv) {
+        this.notificador.setServicio(serv);
+        ;
     }
 }

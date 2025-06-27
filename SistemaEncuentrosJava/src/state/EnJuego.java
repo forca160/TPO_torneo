@@ -1,5 +1,7 @@
 package state;
 
+import java.time.LocalDateTime;
+
 import entities.Encuentro;
 
 import entities.Encuentro;
@@ -26,9 +28,9 @@ public class EnJuego implements EstadoPartido {
         return false;
     }
 
-    private static String mensage = "¡Hola %s! El encuentro de %s del %s esta en Juego";
-
-    public String getMensage() {
-        return mensage;
+    public String getMensage(String usuario, String deporte, LocalDateTime dia) {
+        return String.format("¡Hola %s! El encuentro de %s del %s esta en Juego",
+                usuario, deporte, dia);
     }
+
 }

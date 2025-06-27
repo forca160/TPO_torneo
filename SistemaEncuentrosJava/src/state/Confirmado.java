@@ -2,6 +2,7 @@ package state;
 
 import java.time.LocalDateTime;
 
+import entities.Deporte;
 import entities.Encuentro;
 import observer.TipoNotificacion;
 
@@ -17,8 +18,8 @@ public class Confirmado implements EstadoPartido {
         System.out.println("Estado cambiado: Confirmado");
         if (LocalDateTime.now().isAfter(encuentro.getHorario())) {
             encuentro.cambiarEstado(new EnJuego(encuentro));
-            encuentro.notificar(TipoNotificacion.PARTIDO_EN_JUEGO);
         }
+        encuentro.notificar();
     }
 
     @Override
@@ -31,9 +32,8 @@ public class Confirmado implements EstadoPartido {
         return false;
     }
 
-    private static String mensage = "¡Hola %s! El encuentro de %s del %s ya fue confirmado por todos los.";
-
-    public String getMensage() {
-        return mensage;
+    public String getMensage(String usuario, String deporte, LocalDateTime dia) {
+        return String.format("¡Hola %s! El encuentro de %s del %s ya fue confirmado por todos los participantes.",
+                usuario, deporte, dia);
     }
 }
