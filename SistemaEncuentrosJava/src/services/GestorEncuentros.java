@@ -91,7 +91,7 @@ public class GestorEncuentros {
         e.cambiarEstado(ep);
     }
 
-    public void programarActualizacion(Encuentro e) {
+    public void programarCambioEstado(Encuentro e) {
         // Calcula el retraso en milisegundos desde ahora hasta la fecha del evento
         long delay = Duration.between(LocalDateTime.now(), e.getHorario()).toMillis();
         if (delay < 0) {
