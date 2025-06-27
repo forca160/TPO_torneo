@@ -54,9 +54,36 @@ public class Usuario implements Observer {
         // Implementation to register user
     }
 
-    public void actualizarPerfil() {
-        // Implementation to update profile
+        // Setters para los campos faltantes
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
+
+    public void setDeporteFavorito(Deporte deporteFavorito) {
+        this.deporteFavorito = deporteFavorito;
+    }
+
+    public void setNivel(NivelJuego nivel) {
+        this.nivel = nivel;
+    }
+
+    public void setUbicacion(Posicion ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    public void setNotificador(Notificador notificador) {
+        this.notificador = notificador;
+    }
+
 
     public List<Encuentro> obtenerHistorialPartidos() {
         // Retrieve match history
@@ -74,4 +101,5 @@ public class Usuario implements Observer {
         this.notificador.setServicio(serv);
         ;
     }
+    
 }
