@@ -2,6 +2,7 @@ package facade;
 
 import entities.Usuario;
 import entities.Deporte;
+import entities.Encuentro;
 import entities.EstadisticasPartido;
 import services.GestorUsuarios;
 import services.GestorEncuentros;
@@ -20,8 +21,9 @@ public class SistemaEncuentrosFacade {
         return u;
     }
 
-    public void crearEncuentro(Usuario u, Deporte deporte, int jugadores, int duracion,
-                                String ubicacion, LocalDateTime horario) {
+    public Encuentro crearEncuentro(Usuario u, Deporte deporte, int jugadores, int duracion,
+            String ubicacion, LocalDateTime horario) {
+        return null;
         // Delegate to gestorEncuentros
     }
 

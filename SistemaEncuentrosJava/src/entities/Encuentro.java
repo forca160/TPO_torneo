@@ -3,6 +3,13 @@ package entities;
 import state.EstadoPartido;
 import observer.Observer;
 import observer.TipoNotificacion;
+import state.Cancelado;
+import state.Confirmado;
+import state.EnJuego;
+import state.Finalizado;
+import state.NecesitamosJugadores;
+import state.PartidoArmado;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.ArrayList;
@@ -24,6 +31,28 @@ public class Encuentro implements observer.Subject {
     private EstadisticasPartido estadisticas;
     private List<Observer> observadores = new ArrayList<>();
     private static List<Encuentro> encuentros = new ArrayList<>();
+
+    public Encuentro(String id, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos,
+            Posicion ubicacion, LocalDateTime horario, Usuario organizador,
+            NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) {
+
+        this.id = id;
+        this.deporte = deporte;
+        this.cantidadJugadoresNecesarios = cantidadJugadoresNecesarios;
+        this.duracionMinutos = duracionMinutos;
+        this.ubicacion = ubicacion;
+        this.horario = horario;
+        this.organizador = organizador;
+        this.nivelMinimo = nivelMinimo;
+        this.nivelMaximo = nivelMaximo;
+        this.permitirCualquierNivel = permitirCualquierNivel;
+
+        this.estado = null; // lo setearás con setEstado/cambiarEstado después
+        this.participantes = new ArrayList<>();
+        this.observadores = new ArrayList<>();
+        this.cantidadConfirmaciones = 0;
+        this.estadisticas = null;
+    }
 
     public void setId(String id) {
         this.id = id;
@@ -51,12 +80,18 @@ public class Encuentro implements observer.Subject {
 
     public NivelJuego getNivelMaximo() {
         return nivelMaximo;
-    }   
+    }
 
-
-    
     public static void agregarEncuentro(Encuentro e) {
-         encuentros.add(e);
+        encuentros.add(e);
+    }
+
+    public int getCantidadConfirmaciones() {
+        return cantidadConfirmaciones;
+    }
+
+    public int getCantidadJugadoresNecesarios() {
+        return cantidadJugadoresNecesarios;
     }
 
     public void unirseAlPartido(Usuario usuario) {
@@ -93,8 +128,12 @@ public class Encuentro implements observer.Subject {
         return estado;
     }
 
-    public String getMensajeEstado() {
-        return this.estado.getMensage();
+    public void setDeporte(Deporte deporte) {
+        this.deporte = deporte;
+    }
+
+    public String getMensajeEstado(String usuario) {
+        return this.estado.getMensage(usuario, this.getDeporte().getDescripcion(), this.getHorario());
     }
 
     public boolean verificarCapacidad() {
@@ -112,9 +151,26 @@ public class Encuentro implements observer.Subject {
     }
 
     @Override
-    public void notificar(TipoNotificacion tipo) {
+    public void notificar() {
         for (Observer obs : observadores) {
-            obs.actualizar(tipo, this);
+            obs.actualizar(this);
         }
     }
+
+    public String estadoComoTexto() {
+        if (this.estado instanceof NecesitamosJugadores)
+            return "Necesitamos jugadores";
+        if (this.estado instanceof PartidoArmado)
+            return "Partido armado";
+        if (this.estado instanceof Confirmado)
+            return "Confirmado";
+        if (this.estado instanceof EnJuego)
+            return "En juego";
+        if (this.estado instanceof Finalizado)
+            return "Finalizado";
+        if (this.estado instanceof Cancelado)
+            return "Cancelado";
+        return estado.getClass().getSimpleName();
+    }
+
 }
