@@ -3,6 +3,7 @@ package state;
 import java.time.LocalDateTime;
 
 import entities.Encuentro;
+import entities.Usuario;
 
 public class Finalizado implements EstadoPartido {
     private Encuentro encuentro;
@@ -18,6 +19,11 @@ public class Finalizado implements EstadoPartido {
 
     @Override
     public void manejarCambioEstado() {
+        for (Usuario u : encuentro.getParticipantes()) {
+        u.agregarEncuentroAlHistorial(encuentro);
+    }
+        encuentro.notificar();
+
     }
 
     @Override

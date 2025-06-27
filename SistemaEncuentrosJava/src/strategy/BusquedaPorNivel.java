@@ -21,3 +21,4 @@ public List<Encuentro> buscarEncuentros(Usuario usuario) {
                          e.getNivelMaximo().compareTo(usuario.getNivel()) >= 0)
             .collect(Collectors.toList());
 }
+}

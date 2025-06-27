@@ -20,7 +20,11 @@ public class BusquedaPorHistorial implements EstrategiaBusqueda {
     }
 
     public List<Usuario> obtenerJugadoresPrevios(Usuario usuario) {
-        // Lógica dummy por ahora (debería usar Estadísticas o historial real)
-        return List.of();  // TODO: implementar correctamente si se necesita
-    }
+    return usuario.obtenerHistorialPartidos().stream()
+            .flatMap(e -> e.getParticipantes().stream())
+            .filter(u -> !u.equals(usuario)) // excluís a sí mismo
+            .distinct()
+            .collect(Collectors.toList());
+}
+
 }
