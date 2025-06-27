@@ -6,21 +6,34 @@ import state.Cancelado;
 import state.EstadoPartido;
 
 import observer.Observer;
-import observer.Subject;
 
 import java.util.List;
 import java.util.ArrayList;
 
-public class GestorUsuarios implements Subject {
+public class GestorUsuarios {
     private List<Usuario> usuarios = new ArrayList<>();
     private List<Observer> observadores = new ArrayList<>();
+    private static GestorUsuarios instancia = null;
+
+    private GestorUsuarios() {
+
+    }
+
+    public static GestorUsuarios obtenerInstancia() {
+        if (instancia == null) {
+            instancia = new GestorUsuarios();
+        }
+
+        return instancia;
+    }
 
     public void registrar(Usuario usuario) {
-        usuarios.add(usuario);
+        this.usuarios.add(usuario);
+        this.agregarObserver(usuario);
     }
 
     public List<Usuario> getUsuarios() {
-        return usuarios;
+        return this.usuarios;
     }
 
     public Usuario autenticar(String email, String contraseña) {
@@ -52,9 +65,7 @@ public class GestorUsuarios implements Subject {
         observadores.remove(obs);
     }
 
-    public void notificar(Encuentro e) {
-        for (Observer obs : observadores) {
-            obs.actualizar(e);
-        }
+    public void notificar(Encuentro e, Observer obs) {
+        obs.actualizar(e);
     }
 }

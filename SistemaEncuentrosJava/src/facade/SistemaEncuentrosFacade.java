@@ -4,19 +4,12 @@ package facade;
 import entities.Usuario;
 import entities.Deporte;
 import entities.Encuentro;
-import entities.Encuentro;
 import entities.EstadisticasPartido;
 import entities.NivelJuego;
-import entities.Encuentro;
 import entities.Posicion;
 import services.GestorUsuarios;
-import state.EstadoPartido;
-import state.Finalizado;
-import state.NecesitamosJugadores;
-import state.PartidoArmado;
 import services.GestorEncuentros;
 import strategy.BuscadorEncuentros;
-import facade.TipoBusqueda;
 import strategy.BusquedaPorCercania;
 import strategy.BusquedaPorNivel;
 import strategy.BusquedaPorHistorial;
@@ -24,14 +17,32 @@ import strategy.BusquedaPorHistorial;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import adapter.AdapterFirebase;
+import adapter.AdapterJavaMail;
+import adapter.FirebaseService;
+import adapter.JavaMailService;
+import adapter.Notificador;
+import adapter.TipoDeEnvio;
+
 public class SistemaEncuentrosFacade {
-    private GestorUsuarios gestorUsuarios = new GestorUsuarios();
-    private GestorEncuentros gestorEncuentros = new GestorEncuentros();
+    private static GestorUsuarios gestorUsuarios = GestorUsuarios.obtenerInstancia();
+    private static GestorEncuentros gestorEncuentros = GestorEncuentros.obtenerInstancia();
     private BuscadorEncuentros buscador = new BuscadorEncuentros();
 
     public Usuario registrarUsuario(String usuario, String email, String contrasena, Deporte deporte, NivelJuego nivel,
-            Posicion ubicacion) {
+            Posicion ubicacion, TipoDeEnvio tipoDeEnvio) {
         Usuario u = new Usuario(usuario, email, contrasena, deporte, nivel, ubicacion);
+        Notificador notificador = new Notificador();
+        if (tipoDeEnvio == TipoDeEnvio.PUSH) {
+            FirebaseService firebaseService = new FirebaseService();
+            AdapterFirebase adapterFirebase = new AdapterFirebase(firebaseService);
+            notificador.setServicio(adapterFirebase);
+        } else if (tipoDeEnvio == TipoDeEnvio.MAIL) {
+            JavaMailService javaMailService = new JavaMailService();
+            AdapterJavaMail adapterJavaMail = new AdapterJavaMail(javaMailService);
+            notificador.setServicio(adapterJavaMail);
+        }
+        u.setNotificador(notificador);
         gestorUsuarios.registrar(u);
         return u;
     }
@@ -80,6 +91,5 @@ public class SistemaEncuentrosFacade {
     public Encuentro obtenerEncuentro(String id) {
         return gestorEncuentros.buscarPorId(id);
     }
-
 
 }

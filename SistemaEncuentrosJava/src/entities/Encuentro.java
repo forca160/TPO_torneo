@@ -59,7 +59,7 @@ public class Encuentro implements observer.Subject {
         this.estadisticas = null;
     }
 
-    public String getTitulo(){
+    public String getTitulo() {
         return this.titulo;
     }
 

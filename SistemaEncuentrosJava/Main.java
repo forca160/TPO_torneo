@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import adapter.TipoDeEnvio;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -73,9 +75,19 @@ public class Main {
                                             + "Debes escribir una localidad validad.");
                         }
                     }
-
                     Posicion pos = new Posicion(loc.getLatitud(), loc.getLongitud());
-                    sesiones.put(e, facade.registrarUsuario(u, e, p, dep, nivelSeleccionado, pos));
+                    TipoDeEnvio tipoDeEnvio = null;
+                    while (tipoDeEnvio == null) {
+                        String env = view.input("¿Por donde quiere las notificaciones? (PUSH,MAIL): ").toUpperCase();
+                        try {
+                            tipoDeEnvio = TipoDeEnvio.valueOf(env);
+                        } catch (IllegalArgumentException ex) {
+                            System.out.println(
+                                    "Valor \"" + env + "\" no reconocido. "
+                                            + "Debes escribir un tipo de envio validad.");
+                        }
+                    }
+                    sesiones.put(e, facade.registrarUsuario(u, e, p, dep, nivelSeleccionado, pos, tipoDeEnvio));
                     view.mostrar("Registrado!");
                 }
                 case 2 -> {

@@ -58,7 +58,7 @@ public class Usuario implements Observer {
         // Implementation to register user
     }
 
-        // Setters para los campos faltantes
+    // Setters para los campos faltantes
 
     public void setUsuario(String usuario) {
         this.usuario = usuario;
@@ -88,7 +88,6 @@ public class Usuario implements Observer {
         this.notificador = notificador;
     }
 
-
     public List<Encuentro> obtenerHistorialPartidos() {
         // Retrieve match history
         return new ArrayList<>();
@@ -103,7 +102,6 @@ public class Usuario implements Observer {
 
     public void configurarNotificador(ServicioNotificacion serv) {
         this.notificador.setServicio(serv);
-        ;
     }
-    
+
 }

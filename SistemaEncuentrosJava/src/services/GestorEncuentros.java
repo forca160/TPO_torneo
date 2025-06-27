@@ -22,6 +22,19 @@ import java.util.ArrayList;
 
 public class GestorEncuentros {
     private static List<Encuentro> encuentros = new ArrayList<>();
+    private static GestorEncuentros instancia = null;
+
+    private GestorEncuentros() {
+
+    }
+
+    public static GestorEncuentros obtenerInstancia() {
+        if (instancia == null) {
+            instancia = new GestorEncuentros();
+        }
+
+        return instancia;
+    }
 
     public static List<Encuentro> getEncuentros() {
         return encuentros;
@@ -37,6 +50,15 @@ public class GestorEncuentros {
         encuentros.add(e);
         NecesitamosJugadores nj = new NecesitamosJugadores(e);
         e.cambiarEstado(nj);
+
+        GestorUsuarios gu = GestorUsuarios.obtenerInstancia();
+        List<Usuario> us = gu.getUsuarios();
+
+        for (Usuario usuario : us) {
+            if (usuario.getDeporteFavorito() == e.getDeporte()) {
+                gu.notificar(e, usuario);
+            }
+        }
 
         return e;
     }
