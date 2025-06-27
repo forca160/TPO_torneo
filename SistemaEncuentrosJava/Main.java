@@ -19,18 +19,33 @@ public class Main {
 
     public static void main(String[] args) {
         List<Deporte> listaDeporte = new ArrayList<>();
-        listaDeporte.add(new Deporte("FUTBOL"));
-        listaDeporte.add(new Deporte("TENIS"));
-        listaDeporte.add(new Deporte("BASQUET"));
-        listaDeporte.add(new Deporte("RUGBY"));
-        listaDeporte.add(new Deporte("VOLEY"));
-        listaDeporte.add(new Deporte("PADEL"));
-        listaDeporte.add(new Deporte("HOCKEY"));
+        Deporte d1 = new Deporte("FUTBOL");
+        listaDeporte.add(d1);
+        Deporte d2 = new Deporte("TENIS");
+        listaDeporte.add(d2);
+        Deporte d3 = new Deporte("BASQUET");
+        listaDeporte.add(d3);
+        Deporte d4 = new Deporte("RUGBY");
+        listaDeporte.add(d4);
+        Deporte d5 = new Deporte("VOLEY");
+        listaDeporte.add(d5);
+        Deporte d6 = new Deporte("PADEL");
+        listaDeporte.add(d6);
+        Deporte d7 = new Deporte("HOCKEY");
+        listaDeporte.add(d7);
 
         SistemaEncuentrosFacade facade = new SistemaEncuentrosFacade();
         ConsolaView view = new ConsolaView();
         Map<String, Usuario> sesiones = new HashMap<>();
 
+        Usuario u1 = facade.registrarUsuario("FK", "facu@gmail.com", "123", d6, NivelJuego.INTERMEDIO,
+                new Posicion(Localidades.CABALLITO.getLatitud(), Localidades.CABALLITO.getLongitud()),
+                TipoDeEnvio.PUSH);
+        Usuario u2 = facade.registrarUsuario("RF", "rodri@gmail.com", "123", d6,
+                NivelJuego.INTERMEDIO,
+                new Posicion(Localidades.PALERMO.getLatitud(), Localidades.PALERMO.getLongitud()), TipoDeEnvio.PUSH);
+        sesiones.put(u1.getEmail(), u1);
+        sesiones.put(u2.getEmail(), u2);
         while (true) {
             switch (view.menuPrincipal()) {
                 case 1 -> {

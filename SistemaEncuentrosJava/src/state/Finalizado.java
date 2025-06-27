@@ -21,6 +21,7 @@ public class Finalizado implements EstadoPartido {
     public void manejarCambioEstado() {
         for (Usuario u : encuentro.getParticipantes()) {
             u.agregarEncuentroAlHistorial(encuentro);
+            System.out.println(u.getUsuario() + " " + u.obtenerHistorialPartidos());
         }
         this.encuentro.notificar();
     }
