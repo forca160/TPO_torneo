@@ -37,6 +37,7 @@ public class GestorEncuentros {
         encuentros.add(e);
         NecesitamosJugadores nj = new NecesitamosJugadores(e);
         e.cambiarEstado(nj);
+
         return e;
     }
 
@@ -80,13 +81,14 @@ public class GestorEncuentros {
         e.notificar();
     }
 
-    public void unirseEncuentro(Encuentro e, Usuario u){
-        if (e.getCantidadJugadoresNecesarios() == e.getCantidadConfirmaciones()){
+    public void unirseEncuentro(Encuentro e, Usuario u) {
+        if (e.getCantidadJugadoresNecesarios() == e.getCantidadConfirmaciones()) {
             EstadoPartido ep = new PartidoArmado(e);
             e.cambiarEstado(ep);
         }
     }
-    public void jugarEncuentro(Encuentro e){
+
+    public void jugarEncuentro(Encuentro e) {
         EstadoPartido ep = new EnJuego(e);
         e.cambiarEstado(ep);
     }

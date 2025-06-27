@@ -1,11 +1,8 @@
 import entities.Encuentro;
+import entities.Localidades;
 import entities.Usuario;
-import observer.TipoNotificacion;
 import facade.SistemaEncuentrosFacade;
 import facade.TipoBusqueda;
-import state.EstadoPartido;
-import state.Confirmado;
-import state.EnJuego;
 import entities.Deporte;
 import entities.NivelJuego;
 import entities.Posicion;
@@ -15,9 +12,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import adapter.AdapterFirebase;
-import adapter.AdapterJavaMail;
 
 public class Main {
 
@@ -68,7 +62,19 @@ public class Main {
                                             + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
                         }
                     }
-                    Posicion pos = new Posicion(0, 0);
+                    Localidades loc = null;
+                    while (loc == null) {
+                        String locIn = view.input("¿En que localidad de CABA vive?: ").toUpperCase();
+                        try {
+                            loc = Localidades.valueOf(locIn);
+                        } catch (IllegalArgumentException ex) {
+                            System.out.println(
+                                    "Valor \"" + loc + "\" no reconocido. "
+                                            + "Debes escribir una localidad validad.");
+                        }
+                    }
+
+                    Posicion pos = new Posicion(loc.getLatitud(), loc.getLongitud());
                     sesiones.put(e, facade.registrarUsuario(u, e, p, dep, nivelSeleccionado, pos));
                     view.mostrar("Registrado!");
                 }
@@ -93,25 +99,33 @@ public class Main {
                     }
                     int cant = Integer.parseInt(view.input("Jugadores necesarios: "));
                     int dur = Integer.parseInt(view.input("Duración (min): "));
-                    String ubi = view.input("Ubicación: ");
-                    Posicion pos = new Posicion(0, 0);
+                    Localidades loc = null;
+                    while (loc == null) {
+                        String locIn = view.input("¿En que localidad de CABA es el evento?: ").toUpperCase();
+                        try {
+                            loc = Localidades.valueOf(locIn);
+                        } catch (IllegalArgumentException ex) {
+                            System.out.println(
+                                    "Valor \"" + loc + "\" no reconocido. "
+                                            + "Debes escribir una localidad validad.");
+                        }
+                    }
+                    Posicion pos = new Posicion(loc.getLatitud(), loc.getLongitud());
                     NivelJuego nivelSeleccionadoMin = null;
-                    while (nivelSeleccionadoMin != null) {
+                    while (nivelSeleccionadoMin == null) {
                         String nivE = view.input(
                                 "¿Que nivel de jugeo minimo tiene el encuentro? (PRINCIPIANTE / INTERMEDIO / AVANZADO): ")
                                 .toUpperCase();
                         try {
                             nivelSeleccionadoMin = NivelJuego.valueOf(nivE);
                         } catch (IllegalArgumentException ex) {
-                            if (nivE != "NO") {
-                                System.out.println(
-                                        "Valor \"" + nivE + "\" no reconocido. "
-                                                + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
-                            }
+                            System.out.println(
+                                    "Valor \"" + nivE + "\" no reconocido. "
+                                            + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
                         }
                     }
                     NivelJuego nivelSeleccionadoMax = null;
-                    while (nivelSeleccionadoMax != null) {
+                    while (nivelSeleccionadoMax == null) {
                         String nivE = view.input(
                                 "¿Que nivel de jugeo maximo tiene el encuentro? (PRINCIPIANTE / INTERMEDIO / AVANZADO): ")
                                 .toUpperCase();

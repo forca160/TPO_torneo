@@ -7,7 +7,6 @@ import services.GestorEncuentros;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 public class BusquedaPorCercania implements EstrategiaBusqueda {
 
@@ -38,7 +37,7 @@ public class BusquedaPorCercania implements EstrategiaBusqueda {
         double dLon = lon2 - lon1;
 
         double a = Math.pow(Math.sin(dLat / 2), 2)
-                 + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dLon / 2), 2);
+                + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dLon / 2), 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;
