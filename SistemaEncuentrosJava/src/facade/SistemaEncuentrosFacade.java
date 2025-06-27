@@ -77,7 +77,7 @@ public class SistemaEncuentrosFacade {
     public void confirmarParticipacion(Usuario u, String encuentroId) {
         Encuentro e = gestorEncuentros.buscarPorId(encuentroId);
         if (e != null) {
-            e.confirmarParticipacion(u);
+            gestorEncuentros.confirmarParticipacion(u, e);
         }
     }
 
