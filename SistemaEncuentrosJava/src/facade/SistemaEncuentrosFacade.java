@@ -79,4 +79,6 @@ public class SistemaEncuentrosFacade {
     public Encuentro obtenerEncuentro(String id) {
         return gestorEncuentros.buscarPorId(id);
     }
+
+    
 }

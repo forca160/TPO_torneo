@@ -6,13 +6,18 @@ import entities.NivelJuego;
 import entities.Posicion;
 import entities.Usuario;
 import observer.TipoNotificacion;
+import state.EnJuego;
 import state.EstadoPartido;
 import state.NecesitamosJugadores;
 import state.PartidoArmado;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.ArrayList;
 
 public class GestorEncuentros {
@@ -80,5 +85,28 @@ public class GestorEncuentros {
             EstadoPartido ep = new PartidoArmado(e);
             e.cambiarEstado(ep);
         }
+    }
+    public void jugarEncuentro(Encuentro e){
+        EstadoPartido ep = new EnJuego(e);
+        e.cambiarEstado(ep);
+    }
+
+    public void programarActualizacion(Encuentro e) {
+        // Calcula el retraso en milisegundos desde ahora hasta la fecha del evento
+        long delay = Duration.between(LocalDateTime.now(), e.getHorario()).toMillis();
+        if (delay < 0) {
+            // Si ya pasó la fecha, actualiza inmediatamente
+            jugarEncuentro(e);
+            return;
+        }
+
+        ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+        scheduler.schedule(() -> {
+            try {
+                jugarEncuentro(e);
+            } finally {
+                scheduler.shutdown();
+            }
+        }, delay, TimeUnit.MILLISECONDS);
     }
 }
