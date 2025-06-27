@@ -3,9 +3,10 @@ package strategy;
 import entities.Encuentro;
 import entities.Posicion;
 import entities.Usuario;
+import services.GestorEncuentros;
+
 import java.util.List;
 import java.util.stream.Collectors;
-import java.util.ArrayList;
 
 public class BusquedaPorCercania implements EstrategiaBusqueda {
 
@@ -19,7 +20,7 @@ public class BusquedaPorCercania implements EstrategiaBusqueda {
     public List<Encuentro> buscarEncuentros(Usuario usuario) {
         Posicion ubicacionUsuario = usuario.getUbicacion();
 
-        return Encuentro.getEncuentros().stream()
+        return GestorEncuentros.getEncuentros().stream()
                 .filter(e -> calcularDistancia(ubicacionUsuario, e.getUbicacion()) <= radioKm)
                 .collect(Collectors.toList());
     }
@@ -36,7 +37,7 @@ public class BusquedaPorCercania implements EstrategiaBusqueda {
         double dLon = lon2 - lon1;
 
         double a = Math.pow(Math.sin(dLat / 2), 2)
-                 + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dLon / 2), 2);
+                + Math.cos(lat1) * Math.cos(lat2) * Math.pow(Math.sin(dLon / 2), 2);
 
         double c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
         return R * c;

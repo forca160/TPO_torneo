@@ -13,6 +13,8 @@ public class ConsolaView {
                 2) Crear encuentro
                 3) Buscar encuentros
                 4) Unirse a encuentro
+                5) Cancelar encuentro
+                6) Confirmar asistencia
                 0) Salir""");
         return Integer.parseInt(sc.nextLine());
     }

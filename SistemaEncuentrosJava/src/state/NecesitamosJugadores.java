@@ -19,7 +19,7 @@ public class NecesitamosJugadores implements EstadoPartido {
 
     @Override
     public void manejarCambioEstado() {
-        this.encuentro.notificar(TipoNotificacion.NUEVO_PARTIDO_DEPORTE_FAVORITO);
+        this.encuentro.notificar();
     }
 
     @Override

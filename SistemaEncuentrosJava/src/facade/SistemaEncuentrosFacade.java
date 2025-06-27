@@ -1,3 +1,4 @@
+// SistemaEncuentrosFacade.java
 package facade;
 
 import entities.Usuario;
@@ -7,43 +8,96 @@ import entities.EstadisticasPartido;
 import entities.NivelJuego;
 import entities.Posicion;
 import services.GestorUsuarios;
-import state.NecesitamosJugadores;
 import services.GestorEncuentros;
 import strategy.BuscadorEncuentros;
+import strategy.BusquedaPorCercania;
+import strategy.BusquedaPorNivel;
+import strategy.BusquedaPorHistorial;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+import adapter.AdapterFirebase;
+import adapter.AdapterJavaMail;
+import adapter.FirebaseService;
+import adapter.JavaMailService;
+import adapter.Notificador;
+import adapter.TipoDeEnvio;
+
 public class SistemaEncuentrosFacade {
-    private GestorUsuarios gestorUsuarios = new GestorUsuarios();
-    private GestorEncuentros gestorEncuentros = new GestorEncuentros();
+    private static GestorUsuarios gestorUsuarios = GestorUsuarios.obtenerInstancia();
+    private static GestorEncuentros gestorEncuentros = GestorEncuentros.obtenerInstancia();
     private BuscadorEncuentros buscador = new BuscadorEncuentros();
 
-    public Usuario registrarUsuario(String usuario, String email, String contraseña) {
-        Usuario u = new Usuario(usuario, email, contraseña, null, null, null);
+    public Usuario registrarUsuario(String usuario, String email, String contrasena, Deporte deporte, NivelJuego nivel,
+            Posicion ubicacion, TipoDeEnvio tipoDeEnvio) {
+        Usuario u = new Usuario(usuario, email, contrasena, deporte, nivel, ubicacion);
+        Notificador notificador = new Notificador();
+        if (tipoDeEnvio == TipoDeEnvio.PUSH) {
+            FirebaseService firebaseService = new FirebaseService();
+            AdapterFirebase adapterFirebase = new AdapterFirebase(firebaseService);
+            notificador.setServicio(adapterFirebase);
+        } else if (tipoDeEnvio == TipoDeEnvio.MAIL) {
+            JavaMailService javaMailService = new JavaMailService();
+            AdapterJavaMail adapterJavaMail = new AdapterJavaMail(javaMailService);
+            notificador.setServicio(adapterJavaMail);
+        }
+        u.setNotificador(notificador);
         gestorUsuarios.registrar(u);
         return u;
     }
 
-    public Encuentro crearEncuentro(Usuario u, Deporte deporte, int jugadores, int duracion,
-            String ubicacion, LocalDateTime horario) {
-        return null;
-        // Delegate to gestorEncuentros
+    public Encuentro crearEncuentro(String titulo, Deporte deporte, int cantidadJugadoresNecesarios,
+            int duracionMinutos,
+            Posicion ubicacion, LocalDateTime horario, Usuario organizador,
+            NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) {
+        return gestorEncuentros.crear(titulo, deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario,
+                organizador, nivelMinimo, nivelMaximo, permitirCualquierNivel);
     }
 
-    public List<entities.Encuentro> buscarEncuentros(Usuario u, TipoBusqueda tipo) {
-        // Set strategy and search
-        return null;
+    public List<Encuentro> buscarEncuentros(Usuario u, TipoBusqueda tipo) {
+        switch (tipo) {
+            case POR_NIVEL -> buscador.setEstrategia(new BusquedaPorNivel());
+            case POR_CERCANIA -> buscador.setEstrategia(new BusquedaPorCercania(10));
+            case POR_HISTORIAL -> buscador.setEstrategia(new BusquedaPorHistorial());
+        }
+        return buscador.buscar(u);
     }
 
     public void unirseEncuentro(Usuario u, String encuentroId) {
-        // Delegate
+        Encuentro e = gestorEncuentros.buscarPorId(encuentroId);
+        if (e != null) {
+            e.unirseAlPartido(u);
+        }
+        gestorEncuentros.unirseEncuentro(e, u);
+
     }
 
     public void confirmarParticipacion(Usuario u, String encuentroId) {
-        // Delegate
+        Encuentro e = gestorEncuentros.buscarPorId(encuentroId);
+        if (e != null) {
+            e.confirmarParticipacion(u);
+        }
+    }
+
+    public List<Encuentro> buscaEncuentrosPorOrganizador(Usuario u) {
+        List<Encuentro> e = gestorEncuentros.buscarPorOrganizador(u);
+        if (e.size() <= 0) {
+            return e;
+        }
+        return null;
     }
 
     public void finalizarEncuentro(String encuentroId, EstadisticasPartido stats) {
-        // Delegate
+        Encuentro e = gestorEncuentros.buscarPorId(encuentroId);
+        if (e != null) {
+            gestorEncuentros.finalizarEncuentro(e, stats);
+        }
+
     }
+
+    public Encuentro obtenerEncuentro(String id) {
+        return gestorEncuentros.buscarPorId(id);
+    }
+
 }

@@ -18,6 +18,7 @@ public class Usuario implements Observer {
     private NivelJuego nivel;
     private Posicion ubicacion;
     private Notificador notificador;
+    private List<Encuentro> historial = new ArrayList<>();
 
     public Usuario(String usuario, String email, String contraseña, Deporte deporteFavorito,
             NivelJuego nivel, Posicion ubicacion) {
@@ -28,6 +29,10 @@ public class Usuario implements Observer {
         this.nivel = nivel;
         this.ubicacion = ubicacion;
         this.notificador = new Notificador();
+    }
+
+    public Deporte getDeporteFavorito() {
+        return deporteFavorito;
     }
 
     public Posicion getUbicacion() {
@@ -54,13 +59,34 @@ public class Usuario implements Observer {
         // Implementation to register user
     }
 
-    public void actualizarPerfil() {
-        // Implementation to update profile
+    // Setters para los campos faltantes
+
+    public void setUsuario(String usuario) {
+        this.usuario = usuario;
     }
 
-    public List<Encuentro> obtenerHistorialPartidos() {
-        // Retrieve match history
-        return new ArrayList<>();
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public void setContraseña(String contraseña) {
+        this.contraseña = contraseña;
+    }
+
+    public void setDeporteFavorito(Deporte deporteFavorito) {
+        this.deporteFavorito = deporteFavorito;
+    }
+
+    public void setNivel(NivelJuego nivel) {
+        this.nivel = nivel;
+    }
+
+    public void setUbicacion(Posicion ubicacion) {
+        this.ubicacion = ubicacion;
+    }
+
+    public void setNotificador(Notificador notificador) {
+        this.notificador = notificador;
     }
 
     @Override
@@ -72,6 +98,14 @@ public class Usuario implements Observer {
 
     public void configurarNotificador(ServicioNotificacion serv) {
         this.notificador.setServicio(serv);
-        ;
     }
+
+    public void agregarEncuentroAlHistorial(Encuentro e) {
+        historial.add(e);
+    }
+
+    public List<Encuentro> obtenerHistorialPartidos() {
+        return historial;
+    }
+
 }

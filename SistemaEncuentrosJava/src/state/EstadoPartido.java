@@ -14,3 +14,4 @@ public interface EstadoPartido {
 
     String getMensage(String usuario, String deporte, LocalDateTime dia);
 }
+ 

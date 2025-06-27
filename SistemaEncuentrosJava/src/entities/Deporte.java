@@ -1,10 +1,11 @@
 package entities;
 
 public class Deporte {
-    String descripcion;
+    private String descripcion;
 
-    public Deporte(String descripcionD) {
-        this.descripcion = descripcionD;
+    // Constructor
+    public Deporte(String descripcion) {
+        this.descripcion = descripcion;
     }
 
     public String getDescripcion() {

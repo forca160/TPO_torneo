@@ -1,28 +1,27 @@
 package entities;
 
 public class Posicion {
-    private float lat;
-    private float lon;
+    private double lat;
+    private double lon;
 
-    public Posicion(float lat, float lon) {
+    public Posicion(double lat, double lon) {
         this.lat = lat;
         this.lon = lon;
     }
 
-    public float getLat() {
+    public double getLat() {
         return lat;
     }
 
-    public float getLon() {
+    public double getLon() {
         return lon;
     }
 
-    public void setLat(float lat) {
+    public void setLat(double lat) {
         this.lat = lat;
     }
 
-    public void setLon(float lon) {
+    public void setLon(double lon) {
         this.lon = lon;
     }
 }
-
