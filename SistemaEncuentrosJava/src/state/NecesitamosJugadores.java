@@ -1,6 +1,7 @@
 package state;
 
 import entities.Encuentro;
+import observer.TipoNotificacion;
 
 public class NecesitamosJugadores implements EstadoPartido {
     private Encuentro encuentro;
@@ -16,6 +17,7 @@ public class NecesitamosJugadores implements EstadoPartido {
 
     @Override
     public void manejarCambioEstado() {
+        this.encuentro.notificar(TipoNotificacion.NUEVO_PARTIDO_DEPORTE_FAVORITO);
     }
 
     @Override

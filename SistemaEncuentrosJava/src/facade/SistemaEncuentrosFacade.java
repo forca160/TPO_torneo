@@ -2,8 +2,12 @@ package facade;
 
 import entities.Usuario;
 import entities.Deporte;
+import entities.Encuentro;
 import entities.EstadisticasPartido;
+import entities.NivelJuego;
+import entities.Posicion;
 import services.GestorUsuarios;
+import state.NecesitamosJugadores;
 import services.GestorEncuentros;
 import strategy.BuscadorEncuentros;
 import java.time.LocalDateTime;
@@ -20,9 +24,13 @@ public class SistemaEncuentrosFacade {
         return u;
     }
 
-    public void crearEncuentro(Usuario u, Deporte deporte, int jugadores, int duracion,
-                                String ubicacion, LocalDateTime horario) {
-        // Delegate to gestorEncuentros
+    public void crearEncuentro(Deporte deporte, int  cantidadJugadoresNecesarios, int duracionMinutos, Posicion ubicacion, LocalDateTime horario,
+        Usuario organizador, NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel ) {
+        
+        Encuentro encuentro = new Encuentro(deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario, organizador, nivelMinimo, nivelMaximo, permitirCualquierNivel);
+        
+        NecesitamosJugadores nj = new NecesitamosJugadores();
+        encuentro.cambiarEstado(nj);
     }
 
     public List<entities.Encuentro> buscarEncuentros(Usuario u, TipoBusqueda tipo) {
