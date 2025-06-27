@@ -1,18 +1,20 @@
 package state;
 
+import java.time.LocalDateTime;
+
 import entities.Encuentro;
 import observer.TipoNotificacion;
 
 public class NecesitamosJugadores implements EstadoPartido {
     private Encuentro encuentro;
-    private static String mensage = "¡Hola %s! se publico un encuentro de %s el %s.";
+
+    public String getMensage(String usuario, String deporte, LocalDateTime dia) {
+        return String.format("¡Hola %s! se publico un encuentro de %s el %s.",
+                usuario, deporte, dia);
+    }
 
     public NecesitamosJugadores(Encuentro e) {
         this.encuentro = e;
-    }
-
-    public String getMensage() {
-        return mensage;
     }
 
     @Override

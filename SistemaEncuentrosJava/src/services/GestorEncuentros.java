@@ -13,8 +13,8 @@ public class GestorEncuentros {
 
     public Encuentro buscarPorId(String id) {
         return encuentros.stream()
-            .filter(e -> e.getId().equals(id))
-            .findFirst().orElse(null);
+                .filter(e -> e.getId().equals(id))
+                .findFirst().orElse(null);
     }
 
     public List<Encuentro> obtenerTodos() {
@@ -30,6 +30,6 @@ public class GestorEncuentros {
     }
 
     public void notificarNuevoPartido(Encuentro e) {
-        e.notificar(observer.TipoNotificacion.NUEVO_PARTIDO_DEPORTE_FAVORITO);
+        e.notificar();
     }
 }

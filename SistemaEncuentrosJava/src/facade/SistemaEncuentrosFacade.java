@@ -24,13 +24,10 @@ public class SistemaEncuentrosFacade {
         return u;
     }
 
-    public void crearEncuentro(Deporte deporte, int  cantidadJugadoresNecesarios, int duracionMinutos, Posicion ubicacion, LocalDateTime horario,
-        Usuario organizador, NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel ) {
-        
-        Encuentro encuentro = new Encuentro(deporte, cantidadJugadoresNecesarios, duracionMinutos, ubicacion, horario, organizador, nivelMinimo, nivelMaximo, permitirCualquierNivel);
-        
-        NecesitamosJugadores nj = new NecesitamosJugadores();
-        encuentro.cambiarEstado(nj);
+    public Encuentro crearEncuentro(Usuario u, Deporte deporte, int jugadores, int duracion,
+            String ubicacion, LocalDateTime horario) {
+        return null;
+        // Delegate to gestorEncuentros
     }
 
     public List<entities.Encuentro> buscarEncuentros(Usuario u, TipoBusqueda tipo) {

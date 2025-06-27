@@ -1,17 +1,21 @@
 package state;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+
 import entities.Encuentro;
 
 public class PartidoArmado implements EstadoPartido {
     private Encuentro encuentro;
-    private static String mensage = "¡Hola %s! El encuentro de %s del %s ya está completo y nececita que confirmes tu asistencia.";
 
     public PartidoArmado(Encuentro e) {
         this.encuentro = e;
     }
 
-    public String getMensage() {
-        return mensage;
+    public String getMensage(String usuario, String deporte, LocalDateTime dia) {
+        return String.format(
+                "¡Hola %s! El encuentro de %s del %s ya está completo y nececita que confirmes tu asistencia.",
+                usuario, deporte, dia);
     }
 
     @Override
