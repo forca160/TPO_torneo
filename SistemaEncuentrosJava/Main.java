@@ -44,39 +44,47 @@ public class Main {
         Usuario u2 = facade.registrarUsuario("RF", "rodri@gmail.com", "123", d6,
                 NivelJuego.INTERMEDIO,
                 new Posicion(Localidades.PALERMO.getLatitud(), Localidades.PALERMO.getLongitud()), TipoDeEnvio.PUSH);
-        sesiones.put(u1.getEmail(), u1);
-        sesiones.put(u2.getEmail(), u2);
+        sesiones.put(u1.getUsuario(), u1);
+        sesiones.put(u2.getUsuario(), u2);
         while (true) {
             switch (view.menuPrincipal()) {
                 case 1 -> {
                     String u = view.input("Usuario: ");
                     String e = view.input("Email: ");
                     String p = view.input("Pass: ");
-                    String depIn = view.input("Deporte Favorito (FUTBOL / BASQUET / TENIS / VOLLEY / PADEL / NO): ")
-                            .toUpperCase();
                     Deporte dep = null;
-
-                    for (Deporte d : listaDeporte) {
-                        if (d.getDescripcion().equalsIgnoreCase(depIn)) { // ignora mayúsc./minúsc.
-                            dep = d;
-                            break;
+                    String depIn = "";
+                    while (dep == null) {
+                        depIn = view.input("Deporte Favorito (FUTBOL / BASQUET / TENIS / VOLLEY / PADEL / NO): ")
+                                .toUpperCase();
+                        for (Deporte d : listaDeporte) {
+                            if (d.getDescripcion().equalsIgnoreCase(depIn)) { // ignora mayúsc./minúsc.
+                                dep = d;
+                                break;
+                            }
                         }
-                    }
-                    if (dep == null) {
-                        if (depIn != "NO") {
+                        if (dep == null) {
+                            if (depIn.equalsIgnoreCase("NO")) {
+                                break;
+                            }
                             System.out.println("No se encontró ese deporte.");
                         }
                     }
-                    String nivE = view.input("¿Que nivel de jugeo tiene? (PRINCIPIANTE / INTERMEDIO / AVANZADO / NO): ")
-                            .toUpperCase();
                     NivelJuego nivelSeleccionado = null;
-                    try {
-                        nivelSeleccionado = NivelJuego.valueOf(nivE);
-                    } catch (IllegalArgumentException ex) {
-                        if (nivE != "NO") {
-                            System.out.println(
-                                    "Valor \"" + nivE + "\" no reconocido. "
-                                            + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
+                    if (!depIn.equalsIgnoreCase("NO")) {
+                        while (nivelSeleccionado == null) {
+                            String nivE = view
+                                    .input("¿Que nivel de jugeo tiene? (PRINCIPIANTE / INTERMEDIO / AVANZADO / NO): ")
+                                    .toUpperCase();
+                            try {
+                                nivelSeleccionado = NivelJuego.valueOf(nivE);
+                            } catch (IllegalArgumentException ex) {
+                                if (nivE != "NO") {
+                                    System.out.println(
+                                            "Valor \"" + nivE + "\" no reconocido. "
+                                                    + "Debes escribir PRINCIPIANTE, INTERMEDIO o AVANZADO.");
+                                }
+                            }
                         }
                     }
                     Localidades loc = null;
@@ -102,11 +110,11 @@ public class Main {
                                             + "Debes escribir un tipo de envio validad.");
                         }
                     }
-                    sesiones.put(e, facade.registrarUsuario(u, e, p, dep, nivelSeleccionado, pos, tipoDeEnvio));
+                    sesiones.put(u, facade.registrarUsuario(u, e, p, dep, nivelSeleccionado, pos, tipoDeEnvio));
                     view.mostrar("Registrado!");
                 }
                 case 2 -> {
-                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    Usuario u = sesiones.get(view.input("Tu usuario: "));
                     if (u == null) {
                         view.mostrar("No logueado");
                         break;
@@ -178,7 +186,7 @@ public class Main {
                     view.mostrar("Encuentro creado. ID = " + enc.getId().substring(0, 4));
                 }
                 case 3 -> {
-                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    Usuario u = sesiones.get(view.input("Tu usuario: "));
                     if (u == null) {
                         view.mostrar("No logueado");
                         break;
@@ -188,54 +196,77 @@ public class Main {
                     view.listarEncuentros(facade.buscarEncuentros(u, tb));
                 }
                 case 4 -> {
-                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    Usuario u = sesiones.get(view.input("Tu usuario: "));
                     if (u == null) {
                         view.mostrar("No logueado");
                         break;
                     }
                     String id = view.input("ID del encuentro: ");
-                    facade.unirseEncuentro(u, id);
-                    view.mostrar(String.format("!Te uniste al encuentro %s", id));
+                    if (facade.verificarUnion(id)) {
+                        facade.unirseEncuentro(u, id);
+                        view.mostrar(String.format("!Te uniste al encuentro %s", id));
+                    } else {
+                        view.mostrar("No es posible unirse a este encuentro");
+                    }
                 }
                 case 5 -> {
-                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    Usuario u = sesiones.get(view.input("Tu usuario: "));
                     if (u == null) {
                         view.mostrar("No logueado");
                         break;
                     }
-                    view.listarEncuentros(facade.buscaEncuentrosPorOrganizador(u));
-                    String id = view.input("ID del encuentro que desa cancelar: ");
-                    facade.cancelarEncuentro(id);
-                    view.mostrar(String.format("Se cancelo el encuentro %s.", id));
+                    List<Encuentro> en = facade.buscaEncuentrosPorOrganizador(u);
+                    if (en != null) {
+                        view.listarEncuentros(en);
+                        String id = view.input("ID del encuentro que desa cancelar: ");
+                        facade.cancelarEncuentro(id);
+                        view.mostrar(String.format("Se cancelo el encuentro %s.", id));
+                    } else {
+                        view.mostrar("No es admin de ningun encuentro");
+                    }
                 }
                 case 6 -> {
-                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    Usuario u = sesiones.get(view.input("Tu usuario: "));
                     if (u == null) {
                         view.mostrar("No logueado");
                         break;
                     }
                     String id = view.input("ID del encuentro: ");
-                    facade.confirmarParticipacion(u, id);
+                    if (facade.verificarConfirmacion(id)) {
+                        facade.confirmarParticipacion(u, id);
+                    } else {
+                        view.mostrar("No es posible confirmar el encuentro");
+                    }
                 }
                 case 7 -> {
-                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    Usuario u = sesiones.get(view.input("Tu usuario: "));
                     if (u == null) {
                         view.mostrar("No logueado");
                         break;
                     }
-                    view.listarEncuentros(facade.buscaEncuentrosPorOrganizador(u));
-                    String id = view.input("ID del encuentro que desa empezar: ");
-                    facade.empezarEncuentro(id);
+                    List<Encuentro> en = facade.buscaEncuentrosPorOrganizador(u);
+                    if (en != null) {
+                        view.listarEncuentros(en);
+                        String id = view.input("ID del encuentro que desa empezar: ");
+                        facade.empezarEncuentro(id);
+                    } else {
+                        view.mostrar("No sos admin de ningun encuentro");
+                    }
                 }
                 case 8 -> {
-                    Usuario u = sesiones.get(view.input("Tu email: "));
+                    Usuario u = sesiones.get(view.input("Tu usuario: "));
                     if (u == null) {
                         view.mostrar("No logueado");
                         break;
                     }
-                    view.listarEncuentros(facade.buscaEncuentrosPorOrganizador(u));
-                    String id = view.input("ID del encuentro que desa finalizar: ");
-                    facade.finalizarEncuentro(id);
+                    List<Encuentro> en = facade.buscaEncuentrosPorOrganizador(u);
+                    if (en != null) {
+                        view.listarEncuentros(en);
+                        String id = view.input("ID del encuentro que desa finalizar: ");
+                        facade.finalizarEncuentro(id);
+                    } else {
+                        view.mostrar("No sos admin de ningun encuentro");
+                    }
                 }
                 case 0 -> {
                     System.out.println("¡Hasta luego!");
