@@ -10,6 +10,7 @@ import entities.Posicion;
 import services.GestorUsuarios;
 import state.Confirmado;
 import state.EnJuego;
+import state.EstadoPartido;
 import services.GestorEncuentros;
 import strategy.BuscadorEncuentros;
 import strategy.BusquedaPorCercania;
@@ -116,4 +117,23 @@ public class SistemaEncuentrosFacade {
         }
     }
 
+    public boolean verificarConfirmacion(String id) {
+        Encuentro e = gestorEncuentros.buscarPorId(id);
+        if (e == null) {
+            return false;
+        }
+        EstadoPartido es = e.getEstado();
+
+        return es.puedeConfirmar();
+    }
+
+    public boolean verificarUnion(String id) {
+        Encuentro e = gestorEncuentros.buscarPorId(id);
+        if (e == null) {
+            return false;
+        }
+        EstadoPartido es = e.getEstado();
+
+        return es.puedeUnirse();
+    }
 }
