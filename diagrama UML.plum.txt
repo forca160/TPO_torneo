@@ -1,0 +1,365 @@
+@startuml
+' Adapter package
+package adapter {
+  interface ServicioNotificacion{
+    + void enviarNotificacion(Notificacion notificacion)
+  }
+  class AdapterJavaMail{
+    - JavaMailService javaMailService
+    + AdapterJavaMail(JavaMailService svc)
+    + void enviarNotificacion(Notificacion notificacion)
+  }
+  class AdapterFirebase{
+    - FirebaseService firebaseService
+    + AdapterFirebase(FirebaseService svc)
+    + void enviarNotificacion(Notificacion notificacion)
+  }
+  class Notificador{
+    - ServicioNotificacion servicio
+    + void setServicio(ServicioNotificacion servicio)
+    + void enviar(Notificacion notificacion)
+  }
+  class JavaMailService{
+    + void sendEmail(String to, String subject, String body)
+  }
+  class FirebaseService{
+    + void sendPushNotification(String userToken, String message)
+  }
+}
+
+ServicioNotificacion <|.. AdapterJavaMail
+ServicioNotificacion <|.. AdapterFirebase
+AdapterJavaMail --> JavaMailService
+AdapterFirebase --> FirebaseService
+Notificador --> ServicioNotificacion
+
+' Entities package
+package entities {
+  class Usuario {
+    - String usuario
+    - String email
+    - String contraseña
+    - Deporte deporteFavorito
+    - NivelJuego nivel
+    - String ubicacion
+    - Notificador notificador
+    - List<Encuentro> historial
+    + Usuario(String usuario, String email, String contraseña, Deporte deporteFavorito, NivelJuego nivel, Posicion ubicacion)
+    + List<Encuentro> obtenerHistorialPartidos()
+    + actualizar(tipo: TipoNotificacion, encuentro: Encuentro)
+    + configurarNotificador(notificador: adapter.Notificador)
+  }
+  class Encuentro {
+    - String id
+    - String titulo
+    - Deporte deporte
+    - int cantidadJugadoresNecesarios
+    - int duracionMinutos
+    - Posicion ubicacion
+    - LocalDateTime horario
+    - Usuario organizador
+    - List<Usuario> participantes
+    - int cantidadConfirmaciones
+    - EstadoPartido estado
+    - NivelJuego nivelMinimo
+    - NivelJuego nivelMaximo
+    - boolean permitirCualquierNivel
+    - EstadisticasPartido estadisticas
+    - List<Observer> observadores
+    - Set<Usuario> confirmados
+    + Encuentro(String id, String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos, Posicion ubicacion, LocalDateTime horario, Usuario organizador, NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel)
+    + void unirseAlPartido(Usuario usuario)
+    + void confirmarParticipacion(Usuario usuario)
+    + void cambiarEstado(EstadoPartido nuevoEstado)
+    + boolean verificarCapacidad()
+    + agregarObserver(obs: observer.Observer)
+    + removerObserver(obs: observer.Observer)
+    + notificar(tipo: observer.TipoNotificacion)
+    + String estadoComoTexto()
+  }
+  class EstadisticasPartido{
+  - String comentarios
+  - Map<Usuario, String> comentariosJugadores
+  - LocalDateTime fechaFinalizacion
+  + void registrarComentario()
+  + string obtenerResumen()
+  }
+  class Deporte{
+  - String descripcion
+  + Deporte(String descripcion)
+  }
+  enum NivelJuego {
+    PRINCIPIANTE,
+    INTERMEDIO,
+    AVANZADO
+  }
+  class Posicion{
+    - double lat
+    - double lon
+    + Posicion(double lat, double lon) 
+    + double getLat()
+    + double getLon()
+    + void setLat(double lat)
+    + void setLon(double lon)
+  }
+  enum Localidades{
+    AGRONOMIA(-34.6018, -58.4807)
+    ALMAGRO(-34.6044, -58.4210)
+    BALVANERA(-34.6107, -58.4023)
+    BARRACAS(-34.6379, -58.3704)
+    BELGRANO(-34.5600, -58.4560)
+    BOEDO(-34.6249, -58.4130)
+    CABALLITO(-34.6185, -58.4433)
+    CHACARITA(-34.5877, -58.4565)
+    COGHLAN(-34.5631, -58.4759)
+    COLEGIALES(-34.5831, -58.4511)
+    CONSTITUCION(-34.6278, -58.3819)
+    FLORES(-34.6335, -58.4599)
+    FLORESTA(-34.6301, -58.4866)
+    LA_BOCA(-34.6359, -58.3610)
+    LA_PATERNAL(-34.5980, -58.4584)
+    LINIERS(-34.6468, -58.5322)
+    MATADEROS(-34.6541, -58.5068)
+    MONSERRAT(-34.6084, -58.3726)
+    MONTE_CASTRO(-34.6186, -58.5021)
+    NUEVA_POMPEYA(-34.6521, -58.4229)
+    NUNEZ(-34.5448, -58.4618)
+    PALERMO(-34.5837, -58.4255)
+    PARQUE_AVELLANEDA(-34.6434, -58.4881)
+    PARQUE_CHACABUCO(-34.6286, -58.4306)
+    PARQUE_PATRICIOS(-34.6276, -58.4019)
+    PUERTO_MADERO(-34.6083, -58.3640)
+    RECOLETA(-34.5885, -58.3973)
+    RETIRO(-34.5930, -58.3753)
+    SAAVEDRA(-34.5470, -58.4892)
+    SAN_CRISTOBAL(-34.6193, -58.4126)
+    SAN_NICOLAS(-34.6044, -58.3816)
+    SAN_TELMO(-34.6231, -58.3731)
+    VELEZ_SARSFIELD(-34.6375, -58.4909)
+    VERSALLES(-34.6297, -58.5085)
+    VILLA_CRESPO(-34.5984, -58.4410)
+    VILLA_DEL_PARQUE(-34.5987, -58.4890)
+    VILLA_DEVOTO(-34.5968, -58.5093)
+    VILLA_GENERAL_MITRE(-34.6038, -58.4771)
+    VILLA_LUGANO(-34.6745, -58.4792)
+    VILLA_LURO(-34.6411, -58.4908)
+    VILLA_ORTUZAR(-34.5870, -58.4587)
+    VILLA_PUEYRREDON(-34.5846, -58.5072)
+    VILLA_REAL(-34.6154, -58.5130)
+    VILLA_RIACHUELO(-34.6641, -58.4736)
+    VILLA_SANTA_RITA(-34.6090, -58.4859)
+    VILLA_SOLDATI(-34.6705, -58.4561)
+    VILLA_URQUIZA(-34.5739, -58.4851)
+
+    - final double latitud
+    - final double longitud
+    + Localidades(double latitud, double longitud)
+  }
+}
+Usuario ..|> observer.Observer
+Encuentro ..|> observer.Subject
+
+' Observer package
+package observer {
+  interface Observer{
+    void actualizar(Encuentro encuentro)
+  }
+  interface Subject{
+    agregarObserver(Observer obs)
+    removerObserver(Observer obs)
+    notificar()
+  }
+
+  class Notificacion {
+    - Usuario destinatario
+    - String mensaje
+    - Encuentro encuentro
+    - LocalDateTime fechaCreacion
+    + Notificacion(Usuario destinatario, String mensaje, Encuentro encuentro)
+  }
+  enum TipoNotificacion{
+    NUEVO_PARTIDO_DEPORTE_FAVORITO
+    PARTIDO_ARMADO
+    PARTIDO_EN_JUEGO
+    PARTIDO_FINALIZADO
+    PARTIDO_CANCELADO
+  }
+}
+
+Notificacion --> Usuario : destinatario
+Notificacion --> TipoNotificacion
+Encuentro "1" o-- "*" observer.Observer : observadores
+
+' Facade package
+package facade {
+  class SistemaEncuentrosFacade{
+    - static GestorUsuarios gestorUsuarios
+    - static GestorEncuentros gestorEncuentros
+    - BuscadorEncuentros buscador
+    + Usuario registrarUsuario(String usuario, String email, String contrasena, Deporte deporte, NivelJuego nivel, Posicion ubicacion, TipoDeEnvio tipoDeEnvio)
+    + Encuentro crearEncuentro(String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos, Posicion ubicacion, LocalDateTime horario, Usuario organizador, NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel)
+    + List<Encuentro> buscarEncuentros(Usuario u, TipoBusqueda tipo) 
+    + void unirseEncuentro(Usuario u, String encuentroId)
+    + void confirmarParticipacion(Usuario u, String encuentroId) 
+    + List<Encuentro> buscaEncuentrosPorOrganizador(Usuario u) 
+    + void finalizarEncuentro(String encuentroId)
+    + boolean cancelarEncuentro(String id) 
+    + Encuentro obtenerEncuentro(String id)
+    + void empezarEncuentro(String id)
+  }
+  
+  enum TipoBusqueda{
+    POR_NIVEL
+    POR_CERCANIA
+    POR_HISTORIAL
+  }
+}
+
+SistemaEncuentrosFacade --> services.GestorUsuarios
+SistemaEncuentrosFacade --> services.GestorEncuentros
+SistemaEncuentrosFacade --> strategy.BuscadorEncuentros
+
+' Services package
+package services {
+  class GestorUsuarios{
+    - List<Usuario> usuarios
+    - List<Observer> observadores
+    - static GestorUsuarios instancia
+    - GestorUsuarios()
+    + static GestorUsuarios obtenerInstancia()
+    + void registrar(Usuario usuario)
+    + List<Usuario> getUsuarios()
+    + Usuario autenticar(String email, String contraseña)
+    + Usuario buscarPorEmail(String email)
+    + List<entities.Encuentro> obtenerHistorialPartidos(Usuario usuario)
+    + void cancelarEncuentro(Encuentro e)
+    + void agregarObserver(Observer obs)
+    + void removerObserver(Observer obs)
+    + void notificar(Encuentro e, Observer obs)
+  }
+  class GestorEncuentros{
+    - static List<Encuentro> encuentros
+    - static GestorEncuentros instancia
+    - GestorEncuentros()
+    + Encuentro crear(String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos, Posicion ubicacion, LocalDateTime horario, Usuario organizador, NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel) 
+    + Encuentro buscarPorId(String id)
+    + void confirmarParticipacion(Usuario u, Encuentro e)
+    + List<Encuentro> obtenerTodos()
+    + void actualizarEstado(Encuentro e)
+    + void verificarEstadosAutomaticos()
+    + void notificarNuevoPartido(Encuentro e)
+    + void finalizarEncuentro(Encuentro e)
+    + void unirseEncuentro(Encuentro e, Usuario u)
+    + void jugarEncuentro(Encuentro e)
+    + void programarCambioEstado(Encuentro e)
+    + void programarCambioEstadoDuracion(Encuentro e)
+    + List<Encuentro> buscarPorOrganizador(Usuario u)
+  }
+  class SchedulerService{
+    + void programarVerificacionEstados()
+    + void verificarEncuentrosEnJuego()
+    + void verificarEncuentrosFinalizados()
+  }
+}
+
+GestorUsuarios --> entities.Usuario
+GestorEncuentros --> entities.Encuentro
+GestorEncuentros ..> observer.TipoNotificacion : notificarNuevoPartido()
+
+' Strategy package
+package strategy {
+  interface EstrategiaBusqueda{
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+  }
+  class BuscadorEncuentros{
+    - EstrategiaBusqueda estrategia
+    + void setEstrategia(EstrategiaBusqueda estrategia)
+    + List<Encuentro> buscar(Usuario usuario)
+  }
+  class BusquedaPorCercania{
+    - double radioKm
+    + BusquedaPorCercania(double radioKm)
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+    + double calcularDistancia(Posicion p1, Posicion p2)
+  }
+  class BusquedaPorHistorial{
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+    + List<Usuario> obtenerJugadoresPrevios(Usuario usuario)
+  }
+  class BusquedaPorNivel{
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+  }
+}
+
+EstrategiaBusqueda <|.. BusquedaPorCercania
+EstrategiaBusqueda <|.. BusquedaPorHistorial
+EstrategiaBusqueda <|.. BusquedaPorNivel
+BuscadorEncuentros --> EstrategiaBusqueda
+
+' State package
+package state {
+  interface EstadoPartido{
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class Cancelado{
+    - Encuentro encuentro
+    + Cancelado(Encuentro encuentro)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class Confirmado{
+    - Encuentro encuentro
+    + Confirmado(Encuentro encuentro)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class EnJuego{
+    - Encuentro encuentro
+    + EnJuego(Encuentro encuentro)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class Finalizado{
+    - Encuentro encuentro
+    + Finalizado(Encuentro e)
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+  }
+  class NecesitamosJugadores{
+    - Encuentro encuentro
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+    + NecesitamosJugadores(Encuentro e)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+  }
+  class PartidoArmado{
+    - Encuentro encuentro
+    + PartidoArmado(Encuentro e)
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+  }
+}
+
+EstadoPartido <|.. Cancelado
+EstadoPartido <|.. Confirmado
+EstadoPartido <|.. EnJuego
+EstadoPartido <|.. Finalizado
+EstadoPartido <|.. NecesitamosJugadores
+EstadoPartido <|.. PartidoArmado
+Encuentro --> EstadoPartido
+
+@enduml
