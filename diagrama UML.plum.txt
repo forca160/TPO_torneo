@@ -1,12 +1,30 @@
 @startuml
 ' Adapter package
 package adapter {
-  interface ServicioNotificacion
-  class AdapterJavaMail
-  class AdapterFirebase
-  class Notificador
-  class JavaMailService
-  class FirebaseService
+  interface ServicioNotificacion{
+    + void enviarNotificacion(Notificacion notificacion)
+  }
+  class AdapterJavaMail{
+    - JavaMailService javaMailService
+    + AdapterJavaMail(JavaMailService svc)
+    + void enviarNotificacion(Notificacion notificacion)
+  }
+  class AdapterFirebase{
+    - FirebaseService firebaseService
+    + AdapterFirebase(FirebaseService svc)
+    + void enviarNotificacion(Notificacion notificacion)
+  }
+  class Notificador{
+    - ServicioNotificacion servicio
+    + void setServicio(ServicioNotificacion servicio)
+    + void enviar(Notificacion notificacion)
+  }
+  class JavaMailService{
+    + void sendEmail(String to, String subject, String body)
+  }
+  class FirebaseService{
+    + void sendPushNotification(String userToken, String message)
+  }
 }
 
 ServicioNotificacion <|.. AdapterJavaMail
@@ -24,7 +42,10 @@ package entities {
     - Deporte deporteFavorito
     - NivelJuego nivel
     - String ubicacion
-    + obtenerHistorialPartidos()
+    - Notificador notificador
+    - List<Encuentro> historial
+    + Usuario(String usuario, String email, String contraseña, Deporte deporteFavorito, NivelJuego nivel, Posicion ubicacion)
+    + List<Encuentro> obtenerHistorialPartidos()
     + actualizar(tipo: TipoNotificacion, encuentro: Encuentro)
     + configurarNotificador(notificador: adapter.Notificador)
   }
@@ -47,7 +68,21 @@ package entities {
   - String comentarios
   - Map<Usuario, String> comentariosJugadores
   - LocalDateTime fechaFinalizacion
-}
+  }
+  enum NivelJuego {
+    PRINCIPIANTE,
+    INTERMEDIO,
+    AVANZADO
+  }
+  class Posicion{
+    - double lat
+    - double lon
+    + Posicion(double lat, double lon) 
+    + double getLat()
+    + double getLon()
+    + void setLat(double lat)
+    + void setLon(double lon)
+  }
 
 Usuario ..|> observer.Observer
 Encuentro ..|> observer.Subject
@@ -71,8 +106,27 @@ Encuentro "1" o-- "*" observer.Observer : observadores
 
 ' Facade package
 package facade {
-  class SistemaEncuentrosFacade
-  enum TipoBusqueda
+  class SistemaEncuentrosFacade{
+    - static GestorUsuarios gestorUsuarios
+    - static GestorEncuentros gestorEncuentros
+    - BuscadorEncuentros buscador
+    + Usuario registrarUsuario(String usuario, String email, String contrasena, Deporte deporte, NivelJuego nivel, Posicion ubicacion, TipoDeEnvio tipoDeEnvio)
+    + Encuentro crearEncuentro(String titulo, Deporte deporte, int cantidadJugadoresNecesarios, int duracionMinutos, Posicion ubicacion, LocalDateTime horario, Usuario organizador, NivelJuego nivelMinimo, NivelJuego nivelMaximo, boolean permitirCualquierNivel)
+    + List<Encuentro> buscarEncuentros(Usuario u, TipoBusqueda tipo) 
+    + void unirseEncuentro(Usuario u, String encuentroId)
+    + void confirmarParticipacion(Usuario u, String encuentroId) 
+    + List<Encuentro> buscaEncuentrosPorOrganizador(Usuario u) 
+    + void finalizarEncuentro(String encuentroId)
+    + boolean cancelarEncuentro(String id) 
+    + Encuentro obtenerEncuentro(String id)
+    + void empezarEncuentro(String id)
+  }
+  
+  enum TipoBusqueda{
+    POR_NIVEL
+    POR_CERCANIA
+    POR_HISTORIAL
+  }
 }
 
 SistemaEncuentrosFacade --> services.GestorUsuarios
@@ -92,11 +146,27 @@ GestorEncuentros ..> observer.TipoNotificacion : notificarNuevoPartido()
 
 ' Strategy package
 package strategy {
-  interface EstrategiaBusqueda
-  class BuscadorEncuentros
-  class BusquedaPorCercania
-  class BusquedaPorHistorial
-  class BusquedaPorNivel
+  interface EstrategiaBusqueda{
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+  }
+  class BuscadorEncuentros{
+    - EstrategiaBusqueda estrategia
+    + void setEstrategia(EstrategiaBusqueda estrategia)
+    + List<Encuentro> buscar(Usuario usuario)
+  }
+  class BusquedaPorCercania{
+    - double radioKm
+    + BusquedaPorCercania(double radioKm)
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+    + double calcularDistancia(Posicion p1, Posicion p2)
+  }
+  class BusquedaPorHistorial{
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+    + List<Usuario> obtenerJugadoresPrevios(Usuario usuario)
+  }
+  class BusquedaPorNivel{
+    + List<Encuentro> buscarEncuentros(Usuario usuario)
+  }
 }
 
 EstrategiaBusqueda <|.. BusquedaPorCercania
@@ -106,13 +176,60 @@ BuscadorEncuentros --> EstrategiaBusqueda
 
 ' State package
 package state {
-  interface EstadoPartido
-  class Cancelado
-  class Confirmado
-  class EnJuego
-  class Finalizado
-  class NecesitamosJugadores
-  class PartidoArmado
+  interface EstadoPartido{
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class Cancelado{
+    - Encuentro encuentro
+    + Cancelado(Encuentro encuentro)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class Confirmado{
+    - Encuentro encuentro
+    + Confirmado(Encuentro encuentro)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class EnJuego{
+    - Encuentro encuentro
+    + EnJuego(Encuentro encuentro)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+  }
+  class Finalizado{
+    - Encuentro encuentro
+    + Finalizado(Encuentro e)
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+  }
+  class NecesitamosJugadores{
+    - Encuentro encuentro
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+    + NecesitamosJugadores(Encuentro e)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+  }
+  class PartidoArmado{
+    - Encuentro encuentro
+    + PartidoArmado(Encuentro e)
+    + String getMensage(String usuario, String deporte, LocalDateTime dia)
+    + void manejarCambioEstado()
+    + boolean puedeUnirse()
+    + boolean puedeConfirmar()
+  }
 }
 
 EstadoPartido <|.. Cancelado
